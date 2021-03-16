@@ -1,0 +1,26 @@
+BEGIN TRANSACTION;
+
+CREATE TABLE users (
+  id SERIAL NOT NULL PRIMARY KEY,
+  username VARCHAR(100),
+  userid TEXT UNIQUE NOT NULL,
+  pages BIGINT DEFAULT 0,
+  joined TIMESTAMP NOT NULL
+);
+
+CREATE TABLE users_login (
+  id SERIAL NOT NULL PRIMARY KEY,
+  userhash VARCHAR(100) NOT NULL,
+  userid TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE users_avatar (
+  id SERIAL NOT NULL PRIMARY KEY,
+  users_id TEXT UNIQUE NOT NULL,
+  filename TEXT,
+  filepath TEXT,
+  mimetype TEXT,
+  size BIGINT
+);
+
+COMMIT;
