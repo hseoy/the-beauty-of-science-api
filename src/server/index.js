@@ -1,5 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 import db from '@/database';
 import errorHandler from '@/middleware/error';
 import ErrorResponse from '@/utils/errorResponse';
@@ -8,6 +9,7 @@ import routes from '@/routes';
 const server = express();
 
 server.use(express.json());
+server.use(cors());
 server.use(
   morgan('combined', {
     skip(_req, res) {
