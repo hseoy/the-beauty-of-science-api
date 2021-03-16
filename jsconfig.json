@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@secrets": ["./utils/secrets"],
+      "@": ["./src"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
