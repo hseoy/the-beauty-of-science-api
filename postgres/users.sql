@@ -4,7 +4,10 @@ CREATE TABLE users (
   id SERIAL NOT NULL PRIMARY KEY,
   username VARCHAR(100),
   userid TEXT UNIQUE NOT NULL,
-  pages BIGINT DEFAULT 0,
+  userlevel BIGINT DEFAULT 1,
+  exp BIGINT DEFAULT 0,
+  postcnt BIGINT DEFAULT 0,
+  quizcnt BIGINT DEFAULT 0,
   joined TIMESTAMP NOT NULL
 );
 
@@ -17,7 +20,7 @@ CREATE TABLE users_login (
 CREATE TABLE users_avatar (
   id SERIAL NOT NULL PRIMARY KEY,
   users_id TEXT UNIQUE NOT NULL,
-  filename TEXT,
+  avatarfilename TEXT,
   filepath TEXT,
   mimetype TEXT,
   size BIGINT
