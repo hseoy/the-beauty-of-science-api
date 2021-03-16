@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import ErrorResponse from '@/utils/errorResponse';
 
 const sendErrorDevelopment = (err, res) => {
   res.status(err.statusCode).json({
@@ -26,7 +27,7 @@ const sendErrorProduction = (err, res) => {
   });
 };
 
-const errorHandler = (err, _req, res, _next) => {
+export const errorHandler = (err, _req, res, _next) => {
   const error = { ...err };
   error.statusCode = err.statusCode || 500;
   error.status = err.status || 'error';
@@ -39,4 +40,6 @@ const errorHandler = (err, _req, res, _next) => {
   }
 };
 
-export default errorHandler;
+export const notFoundHandler = (req, _res, next) => {
+  next(new ErrorResponse(`Can't find ${req.originalURL} on this server!`, 404));
+};
