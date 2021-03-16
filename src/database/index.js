@@ -1,4 +1,5 @@
 import knex from 'knex';
+import redis from 'redis';
 
 const db = knex({
   client: 'pg',
@@ -10,4 +11,6 @@ const db = knex({
   },
 });
 
-export default db;
+const redisClient = redis.createClient({ host: '127.0.0.1', port: 6379 });
+
+export { redisClient, db };
