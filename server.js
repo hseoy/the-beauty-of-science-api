@@ -1,5 +1,18 @@
 import express from 'express';
+import knex from 'knex';
 import morgan from 'morgan';
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'user01',
+    password: 'user01',
+    database: 'the_beauty_of_science',
+  },
+});
+
+console.log(db);
 
 const app = express();
 
