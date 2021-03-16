@@ -1,6 +1,7 @@
 import express from 'express';
 import knex from 'knex';
 import morgan from 'morgan';
+import routes from './routes';
 
 const db = knex({
   client: 'pg',
@@ -12,16 +13,11 @@ const db = knex({
   },
 });
 
-console.log(db);
-
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
-
-app.get('/', (_req, res) => {
-  res.json('the-beauty-of-science api');
-});
+app.use('/', routes(db));
 
 const { PORT } = process.env;
 app.listen(PORT, () => {
