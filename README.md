@@ -1,6 +1,3 @@
-# Express Starter
+# the-beauty-of-science-api
 
-- Node + Express
-- ESlint + Prettier
-- husky + lint-staged
-- nodemon
+Discuss the beauty of science (Under development)
