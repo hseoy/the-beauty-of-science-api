@@ -5,17 +5,21 @@
       {
         "targets": {
           "node": "12"
-        }
+        },
+        "loose": true,
+        "shippedProposals": true
       }
     ]
   ],
   "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose" : true }],
+    ["@babel/plugin-proposal-private-methods", {"loose": true}],
     [
       "module-resolver",
       {
         "root": ["./src"],
         "alias": {
-          "@secrets": "./src/utils/secrets",
           "@": "./src"
         }
       }

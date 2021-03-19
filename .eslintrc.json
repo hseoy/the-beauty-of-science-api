@@ -9,6 +9,7 @@
   },
   "plugins": ["prettier"],
   "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "parser": "@babel/eslint-parser",
   "settings": {
     "import/resolver": {
       "babel-module": {}

@@ -1,6 +1,5 @@
 import chalk from 'chalk';
-import { PORT } from '@secrets';
-import server from '@/server';
+import app from './app';
 
 process.on('uncaughtException', err => {
   console.error(chalk.red('UNCAUGHT EXCEPTION! Shutting down...'));
@@ -8,6 +7,4 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-server.listen(PORT, () => {
-  console.log(`app is runniing on port ${PORT}`);
-});
+app();
