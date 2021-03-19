@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import createError from 'http-errors';
 import routes from '@/api';
 import config from '@/config';
 
@@ -18,9 +19,7 @@ export default ({ app }) => {
 
   // Not found handler
   app.use((_req, _res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+    next(createError(404, 'Not Found'));
   });
 
   // Error handlers

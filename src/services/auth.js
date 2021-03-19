@@ -1,4 +1,5 @@
 import { Container, Service } from 'typedi';
+import createError from 'http-errors';
 import config from '@/config';
 import jwt from 'jsonwebtoken';
 
@@ -20,10 +21,9 @@ export default class AuthService {
       [result.user] = await this.userModel.createUser(email, username);
       result.token = AuthService.generateToken(result.user);
       await this.userModel.transactionCommit();
-    } catch (e) {
-      console.log('ERROR', e);
+    } catch {
       await this.userModel.transactionRollback();
-      throw new Error('unable to signup');
+      throw createError(400, 'unable to signup');
     }
 
     return result;
@@ -40,9 +40,8 @@ export default class AuthService {
         const token = AuthService.generateToken(user);
         return { user, token };
       }
-    } catch (e) {
-      console.log(e);
-      throw new Error('unable to signin');
+    } catch {
+      throw createError(400, 'unable to signin');
     }
     return null;
   }

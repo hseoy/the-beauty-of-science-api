@@ -14,7 +14,6 @@ export default app => {
       const { user, token } = await authServiceInstance.Signup(req.body);
       return res.status(201).json({ success: true, user, token });
     } catch (e) {
-      console.log('error: %o', e);
       return next(e);
     }
   });
@@ -26,7 +25,6 @@ export default app => {
       const { user, token } = await authServiceInstance.SignIn(email, password);
       return res.json({ success: true, user, token }).status(200);
     } catch (e) {
-      console.log('error: %o', e);
       return next(e);
     }
   });
@@ -35,7 +33,6 @@ export default app => {
     try {
       return res.status(200).end();
     } catch (e) {
-      console.error('🔥 error %o', e);
       return next(e);
     }
   });
