@@ -3,29 +3,38 @@ import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { Container } from 'typedi';
 
-const generateToken = (
-  { email },
-  options = { access: true, refresh: true },
-) => {
-  const result = {};
-  if (options.access) {
-    const accessToken = jwt.sign({ email }, config.jwt.secret, {
-      algorithm: config.jwt.algorithm,
-      expiresIn: 60 * 60 * config.jwt.expire.access,
-      subject: 'ACCESS_TOKEN',
-    });
-    result.access = accessToken;
-  }
-  if (options.refresh) {
-    const refreshToken = jwt.sign({ email }, config.jwt.secret, {
-      algorithm: config.jwt.algorithm,
-      expiresIn: 60 * 60 * config.jwt.expire.refresh,
-      subject: 'REFRESH_TOKEN',
-    });
-    result.refresh = refreshToken;
-  }
-  return result;
+const generateToken = (subject, expSeconds, hasPayload) => {
+  const { algorithm } = config.jwt;
+  const expiresIn = 60 * 60 * expSeconds;
+  const jwtOption = { algorithm, expiresIn, subject };
+
+  return hasPayload
+    ? payload => jwt.sign(payload, config.jwt.secret, jwtOption)
+    : () => jwt.sign({}, config.jwt.secret, jwtOption);
 };
+
+const generateAccessToken = generateToken(
+  'ACCESS_TOKEN',
+  config.jwt.expire.access,
+  true,
+);
+
+const generateRefreshToken = generateToken(
+  'REFRESH_TOKEN',
+  config.jwt.expire.refresh,
+  false,
+);
+
+const decodeToken = subject => token => {
+  const decode = jwt.verify(token, config.jwt.secret, {
+    algorithms: [config.jwt.algorithm],
+    subject,
+  });
+  return decode;
+};
+
+const decodeAccessToken = decodeToken('ACCESS_TOKEN');
+const decodeRefreshToken = decodeToken('REFRESH_TOKEN');
 
 const generateHash = password => {
   const bcrypt = Container.get('bcrypt');
@@ -59,7 +68,10 @@ const verifyRefreshToken = async (token, email) => {
 };
 
 const authHelper = {
-  generateToken,
+  generateAccessToken,
+  generateRefreshToken,
+  decodeAccessToken,
+  decodeRefreshToken,
   generateHash,
   comparePassword,
   storeRefreshToken,
