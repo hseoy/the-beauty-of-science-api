@@ -2,6 +2,7 @@ import config from '@/config';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { Container } from 'typedi';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants';
 
 const generateToken = (subject, expSeconds, hasPayload) => {
   const { algorithm } = config.jwt;
@@ -14,13 +15,13 @@ const generateToken = (subject, expSeconds, hasPayload) => {
 };
 
 const generateAccessToken = generateToken(
-  'ACCESS_TOKEN',
+  ACCESS_TOKEN,
   config.jwt.expire.access,
   true,
 );
 
 const generateRefreshToken = generateToken(
-  'REFRESH_TOKEN',
+  REFRESH_TOKEN,
   config.jwt.expire.refresh,
   false,
 );
@@ -33,8 +34,8 @@ const decodeToken = subject => token => {
   return decode;
 };
 
-const decodeAccessToken = decodeToken('ACCESS_TOKEN');
-const decodeRefreshToken = decodeToken('REFRESH_TOKEN');
+const decodeAccessToken = decodeToken(ACCESS_TOKEN);
+const decodeRefreshToken = decodeToken(REFRESH_TOKEN);
 
 const generateHash = password => {
   const bcrypt = Container.get('bcrypt');
