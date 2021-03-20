@@ -1,28 +1,28 @@
 import { Container, Service } from 'typedi';
 import createError from 'http-errors';
-import config from '@/config';
-import jwt from 'jsonwebtoken';
 
 @Service()
 export default class AuthService {
   userModel = Container.get('userModel');
 
-  bcrypt = Container.get('bcrypt');
+  authHelper = Container.get('authHelper');
 
   async Signup({ username, email, password }) {
     const result = {};
 
-    const saltRounds = 10;
-    const hashedPw = this.bcrypt.hashSync(password, saltRounds);
+    const hashedPw = this.authHelper.generateHash(password);
 
     await this.userModel.transactionStart();
     try {
       await this.userModel.createUserLogin(email, hashedPw);
       [result.user] = await this.userModel.createUser(email, username);
-      result.token = AuthService.generateToken(result.user);
+      const token = this.authHelper.generateToken(result.user);
+      await this.authHelper.storeRefreshToken(token.refresh, email);
       await this.userModel.transactionCommit();
-    } catch {
+      result.token = token;
+    } catch (e) {
       await this.userModel.transactionRollback();
+      console.log(e);
       throw createError(400, 'unable to signup');
     }
 
@@ -32,23 +32,39 @@ export default class AuthService {
   async SignIn(email, password) {
     try {
       const [hash] = await this.userModel.findPasswordByEmail(email);
-      const isValid =
-        password && this.bcrypt.compareSync(password, hash.password);
+      const isValid = this.authHelper.comparePassword(hash.password, password);
 
       if (isValid) {
         const [user] = await this.userModel.findByEmail(email);
-        const token = AuthService.generateToken(user);
-        return { user, token };
+        const { access, refresh } = this.authHelper.generateToken(user);
+        await this.authHelper.storeRefreshToken(refresh, email);
+        return { user, token: { access, refresh } };
       }
-    } catch {
+    } catch (e) {
       throw createError(400, 'unable to signin');
     }
     return null;
   }
 
-  static generateToken({ id, username, email }) {
-    const jwtPayload = { id, username, email };
-    const expiresIn = { expiresIn: config.jwt.expire };
-    return jwt.sign(jwtPayload, config.jwt.secret, expiresIn);
+  async SignOut(token) {
+    try {
+      await this.authHelper.deleteRefreshToken(token);
+    } catch {
+      throw createError(400, 'unable to signout');
+    }
+  }
+
+  async RefreshAccessToken(token, email) {
+    const [user] = await this.userModel.findByEmail(email);
+    const isValid =
+      user && (await this.authHelper.verifyRefreshToken(token, email));
+    if (isValid) {
+      const { access } = this.authHelper.generateToken(
+        { email },
+        { access: true, refresh: false },
+      );
+      return { access };
+    }
+    throw createError(401, 'Unauthorized');
   }
 }

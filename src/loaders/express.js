@@ -23,17 +23,7 @@ export default ({ app }) => {
   });
 
   // Error handlers
-  app.use((err, _req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
-      return res
-        .status(err.status)
-        .json({ success: false, message: err.message });
-    }
-    return next(err);
-  });
   app.use((err, _req, res, _next) => {
-    res
-      .status(err.status || 500)
-      .json({ success: false, message: err.message });
+    res.status(err.status || 500).json({ message: err.message });
   });
 };

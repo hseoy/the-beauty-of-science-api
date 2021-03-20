@@ -11,7 +11,17 @@ export default {
       throw e;
     }
   },
-  models: ({ models }) => {
+  helpers: helpers => {
+    try {
+      helpers.forEach(h => {
+        Container.set(h.name, h.helper);
+      });
+    } catch (e) {
+      console.log('Error on dependency injector loader: %o', e);
+      throw e;
+    }
+  },
+  models: models => {
     try {
       models.forEach(m => {
         Container.set(m.name, m.model);

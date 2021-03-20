@@ -3,9 +3,12 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 export default {
   port: parseInt(process.env.PORT, 10) || 5000,
   jwt: {
+    algorithm: process.env.JWT_ALGORITHM,
     secret: process.env.JWT_SECRET,
-    expire: process.env.JWT_EXPIRE || '30d',
-    cookieExpire: process.env.JWT_COOKIE_EXPIRE || '30',
+    expire: {
+      access: parseFloat(process.env.JWT_EXPIRE_ACCESS),
+      refresh: parseFloat(process.env.JWT_EXPIRE_REFRESH),
+    },
   },
   database: {
     redis: {
