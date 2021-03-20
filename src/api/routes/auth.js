@@ -45,19 +45,22 @@ export default app => {
     },
   );
 
-  route.get(
+  route.post(
     '/refresh',
     middlewares.isAuth,
     middlewares.isRefreshToken,
     async (req, res, next) => {
+      const authServiceInstance = Container.get(AuthService);
+
       try {
-        const authServiceInstance = Container.get(AuthService);
-        const token = req.headers.authorization.split(' ')[1];
-        const { access } = await authServiceInstance.RefreshAccessToken(
-          token,
-          req.token.email,
+        const { access } = req.body;
+        const refresh = req.headers.authorization.split(' ')[1];
+        const token = await authServiceInstance.RefreshAccessToken(
+          refresh,
+          access,
         );
-        return res.status(200).json({ access });
+
+        return res.status(200).json(token);
       } catch (e) {
         return next(e);
       }
