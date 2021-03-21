@@ -1,6 +1,6 @@
 import jwt from 'express-jwt';
 import config from '@/config';
-import createError from 'http-errors';
+import createHttpError from 'http-errors';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants';
 
 const getTokenFromHeader = req => {
@@ -18,7 +18,7 @@ const verifyTokenSub = sub => (req, _res, next) => {
   if (req.token.sub === sub) {
     return next();
   }
-  return next(createError(401, 'Unauthorized'));
+  return next(createHttpError(401, 'Unauthorized'));
 };
 
 export const isRefreshToken = verifyTokenSub(REFRESH_TOKEN);

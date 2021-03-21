@@ -1,5 +1,5 @@
 import { Container, Service } from 'typedi';
-import createError from 'http-errors';
+import createHttpError from 'http-errors';
 
 @Service()
 export default class AuthService {
@@ -27,7 +27,7 @@ export default class AuthService {
     } catch (e) {
       await this.userModel.transactionRollback();
       console.log(e);
-      throw createError(400, 'unable to signup');
+      throw createHttpError(400, 'unable to signup');
     }
 
     return result;
@@ -50,7 +50,7 @@ export default class AuthService {
       }
     } catch (e) {
       console.error(e);
-      throw createError(400, 'unable to signin');
+      throw createHttpError(400, 'unable to signin');
     }
     return null;
   }
@@ -59,7 +59,7 @@ export default class AuthService {
     try {
       await this.authHelper.deleteRefreshToken(token);
     } catch {
-      throw createError(400, 'unable to signout');
+      throw createHttpError(400, 'unable to signout');
     }
   }
 
@@ -75,7 +75,7 @@ export default class AuthService {
       }
     } catch (e) {
       console.error(e);
-      throw createError(401, 'Unauthorized');
+      throw createHttpError(401, 'Unauthorized');
     }
     return null;
   }
