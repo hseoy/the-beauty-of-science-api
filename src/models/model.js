@@ -21,6 +21,9 @@ export default class Model {
   }
 
   async transactionCommit() {
+    if (this.trx === this.#db) {
+      return;
+    }
     if (this.trx.isCompleted() === false) {
       await this.trx.commit();
       this.trx = this.#db;
@@ -28,6 +31,9 @@ export default class Model {
   }
 
   async transactionRollback() {
+    if (this.trx === this.#db) {
+      return;
+    }
     if (this.trx.isCompleted() === false) {
       await this.trx.rollback();
       this.trx = this.#db;
