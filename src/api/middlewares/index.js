@@ -1,4 +1,5 @@
-import { isAuth, isRefreshToken, isAccessToken } from './auth';
+import { isRefreshToken, isAccessToken } from './isJwtToken';
+import isAuth from './isAuth';
 
 const middlewares = {
   isAuth,

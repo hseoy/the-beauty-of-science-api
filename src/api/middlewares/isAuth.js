@@ -1,7 +1,5 @@
 import jwt from 'express-jwt';
 import config from '@/config';
-import createHttpError from 'http-errors';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants';
 
 const getTokenFromHeader = req => {
   const { authorization } = req.headers;
@@ -14,19 +12,11 @@ const getTokenFromHeader = req => {
   return null;
 };
 
-const verifyTokenSub = sub => (req, _res, next) => {
-  if (req.token.sub === sub) {
-    return next();
-  }
-  return next(createHttpError(401, 'Unauthorized'));
-};
-
-export const isRefreshToken = verifyTokenSub(REFRESH_TOKEN);
-export const isAccessToken = verifyTokenSub(ACCESS_TOKEN);
-
-export const isAuth = jwt({
+const isAuth = jwt({
   secret: config.jwt.secret,
   algorithms: [config.jwt.algorithm],
   userProperty: 'token',
   getToken: getTokenFromHeader,
 });
+
+export default isAuth;
