@@ -29,7 +29,7 @@ export default class UserModel extends Model {
     return this.trx('users').select('*');
   }
 
-  fileByUsername(username) {
+  findByUsername(username) {
     return this.findAll().where({ username });
   }
 
@@ -43,6 +43,10 @@ export default class UserModel extends Model {
 
   findPasswordByEmail(email) {
     return this.trx('users_login').select('password').where({ email });
+  }
+
+  updateUserWithId(id, { username }) {
+    return this.trx('users').where({ id }).update({ username }).returning('*');
   }
 
   updateUsernameWithId(id, username) {
