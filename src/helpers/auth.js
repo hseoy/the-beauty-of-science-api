@@ -10,7 +10,8 @@ const generateToken = (subject, expSeconds, hasPayload) => {
   const jwtOption = { algorithm, expiresIn, subject };
 
   return hasPayload
-    ? payload => jwt.sign(payload, config.jwt.secret, jwtOption)
+    ? ({ id, username }) =>
+        jwt.sign({ id, username }, config.jwt.secret, jwtOption)
     : () => jwt.sign({}, config.jwt.secret, jwtOption);
 };
 
@@ -49,10 +50,10 @@ const comparePassword = (hashedPw, password) => {
   return password && bcrypt.compareSync(password, hashedPw);
 };
 
-const storeRefreshToken = (refresh, email) => {
+const storeRefreshToken = (refresh, id) => {
   const redisClient = Container.get('redisClient');
   const setAsync = promisify(redisClient.set).bind(redisClient);
-  return setAsync(refresh, email, 'EX', 60 * 60 * config.jwt.expire.refresh);
+  return setAsync(refresh, id, 'EX', 60 * 60 * config.jwt.expire.refresh);
 };
 
 const deleteRefreshToken = refresh => {
@@ -61,11 +62,11 @@ const deleteRefreshToken = refresh => {
   return delAsync(refresh);
 };
 
-const verifyRefreshToken = async (token, email) => {
+const verifyRefreshToken = async (token, id) => {
   const redisClient = Container.get('redisClient');
   const getAsync = promisify(redisClient.get).bind(redisClient);
   const res = await getAsync(token);
-  return res === email;
+  return parseInt(res, 10) === parseInt(id, 10);
 };
 
 const authHelper = {

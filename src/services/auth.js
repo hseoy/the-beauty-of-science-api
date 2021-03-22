@@ -21,7 +21,7 @@ export default class AuthService {
       const refresh = this.authHelper.generateRefreshToken();
       result.token = { access, refresh };
 
-      await this.authHelper.storeRefreshToken(refresh, email);
+      await this.authHelper.storeRefreshToken(refresh, result.user.id);
 
       await this.userModel.transactionCommit();
     } catch (e) {
@@ -44,7 +44,7 @@ export default class AuthService {
         const access = this.authHelper.generateAccessToken(user);
         const refresh = this.authHelper.generateRefreshToken();
 
-        await this.authHelper.storeRefreshToken(refresh, email);
+        await this.authHelper.storeRefreshToken(refresh, user.id);
 
         return { user, token: { access, refresh } };
       }
@@ -65,18 +65,17 @@ export default class AuthService {
 
   async RefreshAccessToken(refreshToken, accessToken) {
     try {
-      const { email } = this.authHelper.decodeAccessToken(accessToken);
-      const [user] = await this.userModel.findByEmail(email);
+      const { id } = this.authHelper.decodeAccessToken(accessToken);
+      const [user] = await this.userModel.findById(id);
       const isValid =
-        user && (await this.authHelper.verifyRefreshToken(refreshToken, email));
+        user && (await this.authHelper.verifyRefreshToken(refreshToken, id));
       if (isValid) {
         const access = this.authHelper.generateAccessToken(user);
         return { access };
       }
     } catch (e) {
       console.error(e);
-      throw createHttpError(401, 'Unauthorized');
     }
-    return null;
+    throw createHttpError(401, 'Unauthorized');
   }
 }
