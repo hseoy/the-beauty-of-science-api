@@ -3,29 +3,34 @@ import createHttpError from 'http-errors';
 
 @Service()
 export default class AuthService {
-  userModel = Container.get('userModel');
+  #userModel = Container.get('userModel');
 
-  authHelper = Container.get('authHelper');
+  #authHelper = Container.get('authHelper');
+
+  constructor(userModel, authHelper) {
+    this.#userModel = userModel;
+    this.#authHelper = authHelper;
+  }
 
   async Signup({ username, email, password }) {
     const result = {};
 
-    const hashedPw = this.authHelper.generateHash(password);
+    const hashedPw = this.#authHelper.generateHash(password);
 
-    await this.userModel.transactionStart();
+    await this.#userModel.transactionStart();
     try {
-      await this.userModel.createUserLogin(email, hashedPw);
-      [result.user] = await this.userModel.createUser(email, username);
+      await this.#userModel.createUserLogin(email, hashedPw);
+      [result.user] = await this.#userModel.createUser(email, username);
 
-      const access = this.authHelper.generateAccessToken(result.user);
-      const refresh = this.authHelper.generateRefreshToken();
+      const access = this.#authHelper.generateAccessToken(result.user);
+      const refresh = this.#authHelper.generateRefreshToken();
       result.token = { access, refresh };
 
-      await this.authHelper.storeRefreshToken(refresh, result.user.id);
+      await this.#authHelper.storeRefreshToken(refresh, result.user.id);
 
-      await this.userModel.transactionCommit();
+      await this.#userModel.transactionCommit();
     } catch (e) {
-      await this.userModel.transactionRollback();
+      await this.#userModel.transactionRollback();
       console.log(e);
       throw createHttpError(400, 'unable to signup');
     }
@@ -35,16 +40,16 @@ export default class AuthService {
 
   async SignIn(email, password) {
     try {
-      const [hash] = await this.userModel.findPasswordByEmail(email);
-      const isValid = this.authHelper.comparePassword(hash.password, password);
+      const [hash] = await this.#userModel.findPasswordByEmail(email);
+      const isValid = this.#authHelper.comparePassword(hash.password, password);
 
       if (isValid) {
-        const [user] = await this.userModel.findByEmail(email);
+        const [user] = await this.#userModel.findByEmail(email);
 
-        const access = this.authHelper.generateAccessToken(user);
-        const refresh = this.authHelper.generateRefreshToken();
+        const access = this.#authHelper.generateAccessToken(user);
+        const refresh = this.#authHelper.generateRefreshToken();
 
-        await this.authHelper.storeRefreshToken(refresh, user.id);
+        await this.#authHelper.storeRefreshToken(refresh, user.id);
 
         return { user, token: { access, refresh } };
       }
@@ -57,7 +62,7 @@ export default class AuthService {
 
   async SignOut(token) {
     try {
-      await this.authHelper.deleteRefreshToken(token);
+      await this.#authHelper.deleteRefreshToken(token);
     } catch {
       throw createHttpError(400, 'unable to signout');
     }
@@ -65,12 +70,12 @@ export default class AuthService {
 
   async RefreshAccessToken(refreshToken, accessToken) {
     try {
-      const { id } = this.authHelper.decodeAccessToken(accessToken);
-      const [user] = await this.userModel.findById(id);
+      const { id } = this.#authHelper.decodeAccessToken(accessToken);
+      const [user] = await this.#userModel.findById(id);
       const isValid =
-        user && (await this.authHelper.verifyRefreshToken(refreshToken, id));
+        user && (await this.#authHelper.verifyRefreshToken(refreshToken, id));
       if (isValid) {
-        const access = this.authHelper.generateAccessToken(user);
+        const access = this.#authHelper.generateAccessToken(user);
         return { access };
       }
     } catch (e) {
