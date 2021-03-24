@@ -25,6 +25,10 @@ export default class UserModel extends Model {
     return this.trx('users').where({ id }).del();
   }
 
+  deleteAvatarByEmail(email) {
+    return this.trx('users_avatar').where({ email }).del();
+  }
+
   findAll() {
     return this.trx('users').select('*');
   }
@@ -43,6 +47,10 @@ export default class UserModel extends Model {
 
   findPasswordByEmail(email) {
     return this.trx('users_login').select('password').where({ email });
+  }
+
+  findAvatarByEmail(email) {
+    return this.trx('users_avatar').select('*').where({ email });
   }
 
   updateUserWithId(id, { username }) {
@@ -66,5 +74,13 @@ export default class UserModel extends Model {
 
   updateQuizcntWithId(id, quizcnt) {
     return this.trx('users').where({ id }).update({ quizcnt }).returning('*');
+  }
+
+  updateAvatar(email, filename, filepath, mimetype, size) {
+    return this.trx('users_avatar')
+      .returning('*')
+      .insert({ email, filename, filepath, mimetype, size })
+      .onConflict('email')
+      .merge();
   }
 }
