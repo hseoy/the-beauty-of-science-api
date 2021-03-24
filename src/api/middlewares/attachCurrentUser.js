@@ -5,7 +5,7 @@ const attachCurrentUser = async (req, res, next) => {
     const userModel = Container.get('userModel');
     const [user] = await userModel.findById(req.token.id);
     if (!user) {
-      return res.sendStatus(401);
+      return res.status(401).end();
     }
     req.currentUser = user;
     return next();
