@@ -1,11 +1,17 @@
 import Container from 'typedi';
 
 export default class Model {
-  #db = Container.get('db');
+  #db;
 
-  trx = this.#db;
+  trx;
 
-  #trxProvider = this.#db.transactionProvider();
+  #trxProvider;
+
+  constructor(db) {
+    this.#db = db || Container.get('db');
+    this.trx = this.#db;
+    this.#trxProvider = this.#db.transactionProvider();
+  }
 
   get transaction() {
     return this.#trxProvider();

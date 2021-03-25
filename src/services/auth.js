@@ -3,13 +3,13 @@ import createHttpError from 'http-errors';
 
 @Service()
 export default class AuthService {
-  #userModel = Container.get('userModel');
+  #userModel;
 
-  #authHelper = Container.get('authHelper');
+  #authHelper;
 
   constructor(userModel, authHelper) {
-    this.#userModel = userModel;
-    this.#authHelper = authHelper;
+    this.#userModel = userModel || Container.get('userModel');
+    this.#authHelper = authHelper || Container.get('authHelper');
   }
 
   async Signup({ username, email, password }) {

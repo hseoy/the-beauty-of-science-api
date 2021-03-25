@@ -3,13 +3,13 @@ import { Container, Service } from 'typedi';
 
 @Service()
 export default class UserService {
-  #userHelper = Container.get('userHelper');
+  #userHelper;
 
-  #userModel = Container.get('userModel');
+  #userModel;
 
   constructor(userModel, userHelper) {
-    this.#userModel = userModel;
-    this.#userHelper = userHelper;
+    this.#userModel = userModel || Container.get('userHelper');
+    this.#userHelper = userHelper || Container.get('userModel');
   }
 
   async findAllUserIds() {
