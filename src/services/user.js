@@ -18,7 +18,6 @@ export default class UserService {
       const userIds = users.map(user => user.id);
       return userIds;
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to find users');
     }
   }
@@ -28,7 +27,6 @@ export default class UserService {
       const [user] = await this.#userModel.findById(id);
       return user;
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to find user');
     }
   }
@@ -41,7 +39,6 @@ export default class UserService {
       });
       return updatedUser;
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to update user');
     }
   }
@@ -50,7 +47,6 @@ export default class UserService {
     try {
       await this.#userModel.deleteById(id);
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to delete user');
     }
   }
@@ -63,7 +59,6 @@ export default class UserService {
       );
       return { mimetype: avatar.mimetype, path: avatarFilePath };
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to get avatar image');
     }
   }
@@ -73,18 +68,16 @@ export default class UserService {
       const user = await this.findUser(id);
       return this.getAvatarFileByEmail(user.email);
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to get avatar image');
     }
   }
 
   async updateAvatar(file, email) {
-    const { filename, mimetype, size, path } = file;
     try {
+      const { filename, mimetype, size, path } = file;
       await this.deleteBeforeAvatar(email);
       await this.#userModel.updateAvatar(email, filename, path, mimetype, size);
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to update avatar');
     }
   }
@@ -94,7 +87,6 @@ export default class UserService {
       await this.deleteBeforeAvatar(email);
       await this.#userModel.deleteAvatarByEmail(email);
     } catch (e) {
-      console.log(e);
       throw createHttpError(400, 'unable to delete avatar');
     }
   }
@@ -106,7 +98,6 @@ export default class UserService {
         await this.#userHelper.deleteAvatarFile(beforeAvatar.filepath);
       }
     } catch (e) {
-      console.log(e);
       throw new Error(e);
     }
   }
