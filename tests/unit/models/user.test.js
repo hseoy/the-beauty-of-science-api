@@ -152,13 +152,82 @@ describe('User model unit tests', () => {
 
     it('<UserModel.findPasswordByEmail> returns password', async () => {
       const [login] = await userModel.findPasswordByEmail(createdLogin.email);
-      console.log(createdLogin, login);
       expect(login.password).toBe(createdLogin.password);
     });
 
     it('<UserModel.findAvatarEmail> returns avatar object', async () => {
       const [avatar] = await userModel.findAvatarByEmail(createdAvatar.email);
       expect(avatar).toMatchObject(createdAvatar);
+    });
+  });
+
+  describe('UserModel.update methods test', () => {
+    let createdUser;
+
+    beforeAll(async () => {
+      [createdUser] = await userModel.createUser(userEmail, userName);
+    });
+
+    it('<UserModel.updateUserWithId> returns updated user object', async () => {
+      const user = { username: 'a' };
+      const [updatedUser] = await userModel.updateUserWithId(
+        createdUser.id,
+        user,
+      );
+      expect(updatedUser).toMatchObject(user);
+    });
+
+    it('<UserModel.updateUsernameWithId> returns updated user object', async () => {
+      const username = 'b';
+      const [updatedUser] = await userModel.updateUsernameWithId(
+        createdUser.id,
+        username,
+      );
+      expect(updatedUser.username).toBe(username);
+    });
+
+    it('<UserModel.updateExperienceWithId> returns updated user object', async () => {
+      const experience = parseInt(createdUser.experience, 10) + 1;
+      const [updatedUser] = await userModel.updateExperienceWithId(
+        createdUser.id,
+        experience,
+      );
+      expect(updatedUser.experience).toBe(experience.toString());
+    });
+
+    it('<UserModel.updatePostcntWithId> returns updated user object', async () => {
+      const postcnt = parseInt(createdUser.postcnt, 10) + 1;
+      const [updatedUser] = await userModel.updatePostcntWithId(
+        createdUser.id,
+        postcnt,
+      );
+      expect(updatedUser.postcnt).toBe(postcnt.toString());
+    });
+
+    it('<UserModel.updateQuizcntWithId> returns updated user object', async () => {
+      const quizcnt = parseInt(createdUser.quizcnt, 10) + 1;
+      const [updatedUser] = await userModel.updateQuizcntWithId(
+        createdUser.id,
+        quizcnt,
+      );
+      expect(updatedUser.quizcnt).toBe(quizcnt.toString());
+    });
+
+    it('<UserModel.updateAvatar> returns updated avatar object', async () => {
+      const [updatedAvatar] = await userModel.updateAvatar(
+        createdUser.email,
+        `${avatarFileName}_UPDATED`,
+        `${avatarFilePath}_UPDATED`,
+        `${avatarMimeType}_UPDATED`,
+        avatarSize,
+      );
+
+      expect(updatedAvatar).toMatchObject({
+        filename: `${avatarFileName}_UPDATED`,
+        filepath: `${avatarFilePath}_UPDATED`,
+        mimetype: `${avatarMimeType}_UPDATED`,
+        size: avatarSize,
+      });
     });
   });
 });
