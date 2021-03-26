@@ -6,4 +6,6 @@ module.exports = {
     '^.+\\.js?$': 'babel-jest',
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
+  coverageReporters: ['html', 'text'],
+  coverageDirectory: 'docs/coverage',
 };
