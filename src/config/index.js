@@ -16,6 +16,7 @@ export default {
       port: parseInt(process.env.REDIS_PORT, 10),
     },
     postgres: {
+      connectionUrl: process.env.DATABASE_URL,
       host: process.env.DB_HOST,
       user: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
