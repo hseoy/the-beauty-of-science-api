@@ -12,30 +12,25 @@ export default class AuthService {
     this.#authHelper = authHelper || Container.get('authHelper');
   }
 
-  async Signup({ username, email, password }) {
-    const result = {};
-
+  async SignUp({ username, email, password }) {
     const hashedPw = this.#authHelper.generateHash(password);
 
     await this.#userModel.transactionStart();
     try {
       await this.#userModel.createUserLogin(email, hashedPw);
-      [result.user] = await this.#userModel.createUser(email, username);
+      const [createdUser] = await this.#userModel.createUser(email, username);
 
-      const access = this.#authHelper.generateAccessToken(result.user);
+      const access = this.#authHelper.generateAccessToken(createdUser);
       const refresh = this.#authHelper.generateRefreshToken();
-      result.token = { access, refresh };
 
-      await this.#authHelper.storeRefreshToken(refresh, result.user.id);
-
+      await this.#authHelper.storeRefreshToken(refresh, createdUser.id);
       await this.#userModel.transactionCommit();
+
+      return { access, refresh };
     } catch (e) {
       await this.#userModel.transactionRollback();
-      console.log(e);
       throw createHttpError(400, 'unable to signup');
     }
-
-    return result;
   }
 
   async SignIn(email, password) {
@@ -51,13 +46,12 @@ export default class AuthService {
 
         await this.#authHelper.storeRefreshToken(refresh, user.id);
 
-        return { user, token: { access, refresh } };
+        return { access, refresh };
       }
+      return null;
     } catch (e) {
-      console.error(e);
       throw createHttpError(400, 'unable to signin');
     }
-    return null;
   }
 
   async SignOut(token) {
