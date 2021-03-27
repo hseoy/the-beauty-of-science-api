@@ -8,8 +8,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "build": "babel src -d dist -D --quiet --delete-dir-on-start",
-    "test": "./postgres/create_tables.sh && env-cmd jest",
-    "coverage": "./postgres/create_tables.sh && env-cmd jest --coverage"
+    "test": "./postgres/create_tables.sh && env-cmd -f .env.dev jest",
+    "coverage": "./postgres/create_tables.sh && env-cmd -f .env.dev jest --coverage"
   },
   "author": "",
   "license": "ISC",
