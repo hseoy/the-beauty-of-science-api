@@ -11,7 +11,7 @@
     "test": "./postgres/create_tables.sh && env-cmd -f .env.dev jest",
     "coverage": "./postgres/create_tables.sh && env-cmd -f .env.dev jest --coverage"
   },
-  "author": "",
+  "author": "Yunseo Hwang  <yunseo.dev@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
