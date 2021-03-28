@@ -7,12 +7,13 @@
     "dev": "env-cmd -f .env.dev nodemon --exec babel-node src",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "build": "babel src -d dist -D --quiet && cp .env dist/.env && cp dist_package.json dist/package.json && cp .gitignore dist/.gitignore",
+    "build": "babel src -d dist -D --quiet",
+    "predeploy": "npm run build && cp .env dist/.env && cp dist_package.json dist/package.json && cp .gitignore dist/.gitignore",
     "test": "./postgres/create_tables.sh && env-cmd -f .env.dev jest",
     "coverage": "./postgres/create_tables.sh && env-cmd -f .env.dev jest --coverage"
   },
   "author": "Yunseo Hwang  <yunseo.dev@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",

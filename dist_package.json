@@ -6,7 +6,7 @@
     "start": "env-cmd node index.js"
   },
   "author": "Yunseo Hwang  <yunseo.dev@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "chalk": "^4.1.0",
