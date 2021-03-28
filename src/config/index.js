@@ -12,6 +12,8 @@ export default {
   },
   database: {
     redis: {
+      connectionUrl: process.env.REDIS_URL,
+      connectionTlsUrl: process.env.REDIS_TLS_URL,
       host: process.env.REDIS_HOST,
       port: parseInt(process.env.REDIS_PORT, 10),
     },
