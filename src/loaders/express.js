@@ -15,6 +15,9 @@ export default ({ app }) => {
   );
   app.use(cors());
   app.use(express.json());
+  app.get('/', (_req, res) => {
+    res.json('This server is working.');
+  });
   app.use(config.api.prefix, routes());
 
   // Not found handler
