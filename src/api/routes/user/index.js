@@ -49,7 +49,7 @@ export default app => {
     middlewares.isAuth,
     middlewares.isAccessToken,
     middlewares.attachCurrentUser,
-    middlewares.uploadFile.single('avatar'),
+    middlewares.uploadFile('avatar').single('avatar'),
     controller.handleUpdateAvatar,
   );
 
@@ -58,7 +58,7 @@ export default app => {
     middlewares.isAuth,
     middlewares.isAccessToken,
     middlewares.attachCurrentUser,
-    middlewares.uploadFile.single('avatar'),
+    middlewares.uploadFile('avatar').single('avatar'),
     controller.handleUpdateAvatar,
   );
 

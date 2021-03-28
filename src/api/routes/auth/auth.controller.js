@@ -11,7 +11,7 @@ const handleSignUp = async (req, res, next) => {
   }
 };
 
-const hanldeSignIn = async (req, res, next) => {
+const handleSignIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const authServiceInstance = Container.get(AuthService);
@@ -49,7 +49,7 @@ const handleRefresh = async (req, res, next) => {
 
 const authController = {
   handleSignUp,
-  hanldeSignIn,
+  handleSignIn,
   handleSignOut,
   handleRefresh,
 };
