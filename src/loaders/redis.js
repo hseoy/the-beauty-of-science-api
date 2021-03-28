@@ -15,5 +15,5 @@ export default () => {
       port: config.database.redis.port,
     });
   }
-  return null;
+  throw new Error(`Unknown NODE_ENV(${process.env.NODE_ENV}`);
 };

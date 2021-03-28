@@ -4,7 +4,7 @@ import config from '@/config';
 export default () => {
   let connection;
 
-  if (process.env.NODE_NEV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     connection = {
       connectionString: config.database.connectionUrl,
       ssl: { rejectUnauthorized: false },
@@ -17,7 +17,7 @@ export default () => {
       database: config.database.postgres.name,
     };
   } else {
-    return null;
+    throw new Error(`Unknown NODE_ENV(${process.env.NODE_ENV}`);
   }
 
   return knex({ client: 'pg', connection });
