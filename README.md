@@ -6,6 +6,8 @@ Deployed by Heroku : [Click!](https://the-beauty-of-science-api.herokuapp.com/)
 
 ## Table of content
 
+- [Technologies](#technologies)
+- [API Spec](#api-spec)
 - [Setting up a project](#setting-up-a-project)
 - [Environment variables](#environment-variables)
   - [Common environment variables](#common-environment-variables)
@@ -15,6 +17,31 @@ Deployed by Heroku : [Click!](https://the-beauty-of-science-api.herokuapp.com/)
 - [Test and coverage](#test-and-coverage)
 - [Deployment](#deployment)
 - [LICENSE](#license)
+
+---
+
+## Technologies
+
+- [Node.js](https://nodejs.org/en/)
+- [Express](https://expressjs.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Redis](https://redis.io/)
+- [Babel](https://babeljs.io/)
+- [Jest](https://jestjs.io/)
+- [ESlint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
+
+**[⬆ Back to Top](#Table-of-content)**
+
+---
+
+## API Spec
+
+> You can read api specification below :
+
+- [Click!](https://hseoy.github.io/the-beauty-of-science-api/)
+
+**[⬆ Back to Top](#Table-of-content)**
 
 ---
 
@@ -179,10 +206,15 @@ $ git checkout main
 $ git worktree add dist deploy
 ```
 
-3. Deploy to heroku after commit
+3. Build
 
 ```
 $ npm run build
+```
+
+4. Deploy to heroku after commit
+
+```
 $ cd dist
 $ git add .
 $ git commit -s -m "Update"
