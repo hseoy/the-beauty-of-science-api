@@ -4,7 +4,7 @@ import AuthService from '@/services/auth';
 const handleSignUp = async (req, res, next) => {
   try {
     const authServiceInstance = Container.get(AuthService);
-    const token = await authServiceInstance.Signup(req.body);
+    const token = await authServiceInstance.SignUp(req.body);
     return res.status(201).json({ token });
   } catch (e) {
     return next(e);
