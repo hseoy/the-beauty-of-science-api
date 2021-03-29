@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import { Container } from 'typedi';
 
 const attachCurrentUser = async (req, res, next) => {
@@ -5,7 +6,7 @@ const attachCurrentUser = async (req, res, next) => {
     const userModel = Container.get('userModel');
     const [user] = await userModel.findById(req.token.id);
     if (!user) {
-      return res.status(401).end();
+      return next(createHttpError(401, 'Unauthorized'));
     }
     req.currentUser = user;
     return next();
