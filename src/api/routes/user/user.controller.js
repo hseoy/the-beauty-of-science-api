@@ -13,7 +13,7 @@ const handleGetUserIds = async (_req, res, next) => {
 
 const handleGetUser = async (req, res, next) => {
   try {
-    const { id } = req.param;
+    const { id } = req.params;
     const userServiceInstance = Container.get(UserService);
     const user = await userServiceInstance.findUser(id);
     return res.status(200).json({ user });
@@ -64,7 +64,7 @@ const handleGetCurrentUserAvatar = async (req, res, next) => {
 
 const handleGetUserAvatar = async (req, res, next) => {
   try {
-    const { id } = req.param;
+    const { id } = req.params;
     const userServiceInstance = Container.get(UserService);
     const avatar = await userServiceInstance.getAvatarFileById(id);
     return res.status(200).type(avatar.mimetype).sendFile(avatar.path);
