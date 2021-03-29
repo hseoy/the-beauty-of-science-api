@@ -1,20 +1,22 @@
 import createHttpError from 'http-errors';
-import { Container, Service } from 'typedi';
+import { Service, Inject } from 'typedi';
 
 @Service()
 export default class UserService {
-  #userHelper;
+  @Inject('userHelper')
+  userHelper;
 
-  #userModel;
+  @Inject('userModel')
+  userModel;
 
   constructor(userModel, userHelper) {
-    this.#userModel = userModel || Container.get('userHelper');
-    this.#userHelper = userHelper || Container.get('userModel');
+    this.userModel = userModel;
+    this.userHelper = userHelper;
   }
 
   async findAllUserIds() {
     try {
-      const users = await this.#userModel.findAll();
+      const users = await this.userModel.findAll();
       const userIds = users.map(user => user.id);
       return userIds;
     } catch (e) {
@@ -24,7 +26,7 @@ export default class UserService {
 
   async findUser(id) {
     try {
-      const [user] = await this.#userModel.findById(id);
+      const [user] = await this.userModel.findById(id);
       return user;
     } catch (e) {
       throw createHttpError(400, 'unable to find user');
@@ -34,7 +36,7 @@ export default class UserService {
   async updateUser(id, user) {
     try {
       const { username } = user;
-      const [updatedUser] = await this.#userModel.updateUserWithId(id, {
+      const [updatedUser] = await this.userModel.updateUserWithId(id, {
         username,
       });
       return updatedUser;
@@ -45,7 +47,7 @@ export default class UserService {
 
   async deleteUser(id) {
     try {
-      await this.#userModel.deleteById(id);
+      await this.userModel.deleteById(id);
     } catch (e) {
       throw createHttpError(400, 'unable to delete user');
     }
@@ -53,10 +55,8 @@ export default class UserService {
 
   async getAvatarFileByEmail(email) {
     try {
-      const [avatar] = await this.#userModel.findAvatarByEmail(email);
-      const avatarFilePath = this.#userHelper.getAvatarFilePath(
-        avatar.filepath,
-      );
+      const [avatar] = await this.userModel.findAvatarByEmail(email);
+      const avatarFilePath = this.userHelper.getAvatarFilePath(avatar.filepath);
       return { mimetype: avatar.mimetype, path: avatarFilePath };
     } catch (e) {
       throw createHttpError(400, 'unable to get avatar image');
@@ -76,7 +76,7 @@ export default class UserService {
     try {
       const { filename, mimetype, size, path } = file;
       await this.deleteBeforeAvatar(email);
-      await this.#userModel.updateAvatar(email, filename, path, mimetype, size);
+      await this.userModel.updateAvatar(email, filename, path, mimetype, size);
     } catch (e) {
       throw createHttpError(400, 'unable to update avatar');
     }
@@ -85,7 +85,7 @@ export default class UserService {
   async deleteAvatar(email) {
     try {
       await this.deleteBeforeAvatar(email);
-      await this.#userModel.deleteAvatarByEmail(email);
+      await this.userModel.deleteAvatarByEmail(email);
     } catch (e) {
       throw createHttpError(400, 'unable to delete avatar');
     }
@@ -93,9 +93,9 @@ export default class UserService {
 
   async deleteBeforeAvatar(email) {
     try {
-      const [beforeAvatar] = await this.#userModel.findAvatarByEmail(email);
+      const [beforeAvatar] = await this.userModel.findAvatarByEmail(email);
       if (beforeAvatar) {
-        await this.#userHelper.deleteAvatarFile(beforeAvatar.filepath);
+        await this.userHelper.deleteAvatarFile(beforeAvatar.filepath);
       }
     } catch (e) {
       throw new Error(e);

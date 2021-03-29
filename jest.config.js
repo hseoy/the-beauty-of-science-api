@@ -5,7 +5,7 @@ module.exports = {
   transform: {
     '^.+\\.js?$': 'babel-jest',
   },
-  transformIgnorePatterns: ['<rootDir>/node_modules/'],
+  transformIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
   coverageReporters: ['html', 'text'],
   coverageDirectory: 'docs/coverage',
 };
