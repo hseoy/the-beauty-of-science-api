@@ -9,9 +9,6 @@ export default app => {
 
   route.get('/', controller.handleGetUserIds);
 
-  route.get('/:id', controller.handleGetUser);
-  route.get('/:id/avatar', controller.handleGetUserAvatar);
-
   route.get(
     '/me',
     middlewares.isAuth,
@@ -69,4 +66,7 @@ export default app => {
     middlewares.attachCurrentUser,
     controller.handleDeleteAvatar,
   );
+
+  route.get('/:id', controller.handleGetUser);
+  route.get('/:id/avatar', controller.handleGetUserAvatar);
 };
