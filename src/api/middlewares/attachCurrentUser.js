@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { Container } from 'typedi';
 
-const attachCurrentUser = async (req, res, next) => {
+const attachCurrentUser = async (req, _res, next) => {
   try {
     const userModel = Container.get('userModel');
     const [user] = await userModel.findById(req.token.id);
