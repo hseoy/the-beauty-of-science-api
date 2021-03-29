@@ -5,7 +5,7 @@
 ## Table of content
 
 - [Root](#root)
-  - [GET /](#get)
+  - [GET /](#get-)
 - [Auth](#auth)
   - [POST /api/auth/signup](#post-apiauthsignup)
   - [POST /api/auth/signin](#post-apiauthsignin)
@@ -39,7 +39,7 @@
   - (String) : "This server is working."
 - error response: X
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ## Auth
 
@@ -62,7 +62,7 @@
 - error response:
   - `400 unable to signup`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### POST /api/auth/signin
 
@@ -82,7 +82,7 @@
 - error response:
   - `400 unable to signin`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### GET /api/auth/signout
 
@@ -96,7 +96,7 @@
 - error response:
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### POST /api/auth/refresh
 
@@ -115,7 +115,7 @@
 - error response:
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ---
 
@@ -134,7 +134,7 @@
 - error response:
   - `400 unable to find users`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### GET /api/users/:id
 
@@ -157,7 +157,7 @@
 - error response:
   - `400 unable to find user`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### GET /api/users/:id/avatar
 
@@ -173,7 +173,7 @@
 - error response:
   - `400 unable to get avatar image`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### GET /api/users/me
 
@@ -197,7 +197,7 @@
   - `400 unable to find user`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### PUT /api/users/me
 
@@ -224,7 +224,7 @@
   - `400 unable to update user`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### DELETE /api/users/me
 
@@ -239,7 +239,7 @@
   - `400 unable to delete user`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### GET /api/users/me/avatar
 
@@ -256,7 +256,7 @@
   - `400 unable to get avatar image`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### POST /api/users/me/avatar
 
@@ -273,7 +273,7 @@
   - `400 unable to update avatar`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### PUT /api/users/me/avatar
 
@@ -290,7 +290,7 @@
   - `400 unable to update avatar`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ### DELETE /api/users/me/avatar
 
@@ -305,6 +305,6 @@
   - `400 unable to delete avatar`
   - `401 Unauthorized`
 
-**[⬆ Back to Top](#Table-of-content)**
+**[⬆ Back to Top](#table-of-content)**
 
 ---
