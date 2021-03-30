@@ -29,6 +29,10 @@ export default class UserModel extends Model {
     return this.trx('users_avatar').where({ email }).del();
   }
 
+  deleteLoginByEmail(email) {
+    return this.trx('users_login').where({ email }).del();
+  }
+
   findAll() {
     return this.trx('users').select('*');
   }
