@@ -4,7 +4,7 @@ export default class UserModel extends Model {
   createUser(email, username) {
     return this.trx('users')
       .returning('*')
-      .insert({ email, username, joined: new Date() });
+      .insert({ email, username, joined: this.trx.fn.now() });
   }
 
   createUserLogin(email, password) {
