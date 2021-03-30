@@ -10,8 +10,6 @@ CREATE TABLE posts (
   category TEXT DEFAULT 'common',
   title TEXT NOT NULL,
   content TEXT NOT NULL,
-  participantcnt BIGINT DEFAULT 0,
-  totalpoint BIGINT DEFAULT 0,
   created TIMESTAMP NOT NULL,
   modified TIMESTAMP NOT NULL
 );
