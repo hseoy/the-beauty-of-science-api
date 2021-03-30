@@ -90,6 +90,12 @@ describe('User model unit tests', () => {
       const res = await userModel.deleteAvatarByEmail(createdAvatar.email);
       expect(res).toBe(1);
     });
+
+    it('<UserModel.deleteLoginByEmail> returns 1', async () => {
+      const [createdLogin] = await userModel.createUserLogin(userEmail, userPw);
+      const res = await userModel.deleteLoginByEmail(createdLogin.email);
+      expect(res).toBe(1);
+    });
   });
 
   describe('UserModel.find methods test', () => {
@@ -120,6 +126,14 @@ describe('User model unit tests', () => {
       );
 
       [createdLogin] = await userModel.createUserLogin(userEmail, userPw);
+    });
+
+    afterAll(async () => {
+      createdUsers.forEach(async user => {
+        await userModel.deleteByEmail(user.email);
+      });
+      await userModel.deleteAvatarByEmail(createdAvatar.email);
+      await userModel.deleteLoginByEmail(createdLogin.email);
     });
 
     it('<UserModel.findAll> returns user object array', async () => {
@@ -166,6 +180,10 @@ describe('User model unit tests', () => {
 
     beforeAll(async () => {
       [createdUser] = await userModel.createUser(userEmail, userName);
+    });
+
+    afterAll(async () => {
+      await userModel.deleteByEmail(createdUser.email);
     });
 
     it('<UserModel.updateUserWithId> returns updated user object', async () => {
