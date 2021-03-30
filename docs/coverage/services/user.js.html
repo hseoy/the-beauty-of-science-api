@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -171,6 +171,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -218,8 +220,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -266,22 +266,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import createHttpError from 'http-errors';
-import { Container, Service } from 'typedi';
+import { Service, Inject } from 'typedi';
 &nbsp;
 @Service()
 export default class UserService {
-  #userHelper;
+  @Inject('userHelper')
+  userHelper;
 &nbsp;
-  #userModel;
+  @Inject('userModel')
+  userModel;
 &nbsp;
   constructor(userModel, userHelper) {
-    this.#userModel = userModel || Container.get('userHelper');
-    this.#userHelper = userHelper || Container.get('userModel');
+    this.userModel = userModel;
+    this.userHelper = userHelper;
   }
 &nbsp;
   async findAllUserIds() {
     try {
-      const users = await this.#userModel.findAll();
+      const users = await this.userModel.findAll();
       const userIds = users.map(user =&gt; user.id);
       return userIds;
     } catch (e) {
@@ -291,7 +293,7 @@ export default class UserService {
 &nbsp;
   async findUser(id) {
     try {
-      const [user] = await this.#userModel.findById(id);
+      const [user] = await this.userModel.findById(id);
       return user;
     } catch (e) {
       throw createHttpError(400, 'unable to find user');
@@ -301,7 +303,7 @@ export default class UserService {
   async updateUser(id, user) {
     try {
       const { username } = user;
-      const [updatedUser] = await this.#userModel.updateUserWithId(id, {
+      const [updatedUser] = await this.userModel.updateUserWithId(id, {
         username,
       });
       return updatedUser;
@@ -312,7 +314,7 @@ export default class UserService {
 &nbsp;
   async deleteUser(id) {
     try {
-      await this.#userModel.deleteById(id);
+      await this.userModel.deleteById(id);
     } catch (e) {
       throw createHttpError(400, 'unable to delete user');
     }
@@ -320,10 +322,8 @@ export default class UserService {
 &nbsp;
   async getAvatarFileByEmail(email) {
     try {
-      const [avatar] = await this.#userModel.findAvatarByEmail(email);
-      const avatarFilePath = this.#userHelper.getAvatarFilePath(
-        avatar.filepath,
-      );
+      const [avatar] = await this.userModel.findAvatarByEmail(email);
+      const avatarFilePath = this.userHelper.getAvatarFilePath(avatar.filepath);
       return { mimetype: avatar.mimetype, path: avatarFilePath };
     } catch (e) {
       throw createHttpError(400, 'unable to get avatar image');
@@ -343,7 +343,7 @@ export default class UserService {
     try {
       const { filename, mimetype, size, path } = file;
       await this.deleteBeforeAvatar(email);
-      await this.#userModel.updateAvatar(email, filename, path, mimetype, size);
+      await this.userModel.updateAvatar(email, filename, path, mimetype, size);
     } catch (e) {
       throw createHttpError(400, 'unable to update avatar');
     }
@@ -352,7 +352,7 @@ export default class UserService {
   async deleteAvatar(email) {
     try {
       await this.deleteBeforeAvatar(email);
-      await this.#userModel.deleteAvatarByEmail(email);
+      await this.userModel.deleteAvatarByEmail(email);
     } catch (e) {
       throw createHttpError(400, 'unable to delete avatar');
     }
@@ -360,9 +360,9 @@ export default class UserService {
 &nbsp;
   async deleteBeforeAvatar(email) {
     try {
-      const [beforeAvatar] = await this.#userModel.findAvatarByEmail(email);
+      const [beforeAvatar] = await this.userModel.findAvatarByEmail(email);
       if (beforeAvatar) {
-        await this.#userHelper.deleteAvatarFile(beforeAvatar.filepath);
+        await this.userHelper.deleteAvatarFile(beforeAvatar.filepath);
       }
     } catch (e) {
       throw new Error(e);
@@ -376,7 +376,7 @@ export default class UserService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Mar 27 2021 20:02:38 GMT+0900 (GMT+09:00)
+                at Tue Mar 30 2021 23:02:33 GMT+0900 (GMT+09:00)
             </div>
         </div>
         <script src="../prettify.js"></script>

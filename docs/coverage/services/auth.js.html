@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -137,7 +137,11 @@
 <a name='L78'></a><a href='#L78'>78</a>
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -217,53 +221,55 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Container, Service } from 'typedi';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Service, Inject } from 'typedi';
 import createHttpError from 'http-errors';
 &nbsp;
 @Service()
 export default class AuthService {
-  #userModel;
+  @Inject('userModel')
+  userModel;
 &nbsp;
-  #authHelper;
+  @Inject('authHelper')
+  authHelper;
 &nbsp;
   constructor(userModel, authHelper) {
-    this.#userModel = userModel || Container.get('userModel');
-    this.#authHelper = authHelper || Container.get('authHelper');
+    this.userModel = userModel;
+    this.authHelper = authHelper;
   }
 &nbsp;
   async SignUp({ username, email, password }) {
-    const hashedPw = this.#authHelper.generateHash(password);
+    const hashedPw = this.authHelper.generateHash(password);
 &nbsp;
-    await this.#userModel.transactionStart();
+    await this.userModel.transactionStart();
     try {
-      await this.#userModel.createUserLogin(email, hashedPw);
-      const [createdUser] = await this.#userModel.createUser(email, username);
+      await this.userModel.createUserLogin(email, hashedPw);
+      const [createdUser] = await this.userModel.createUser(email, username);
 &nbsp;
-      const access = this.#authHelper.generateAccessToken(createdUser);
-      const refresh = this.#authHelper.generateRefreshToken();
+      const access = this.authHelper.generateAccessToken(createdUser);
+      const refresh = this.authHelper.generateRefreshToken();
 &nbsp;
-      await this.#authHelper.storeRefreshToken(refresh, createdUser.id);
-      await this.#userModel.transactionCommit();
+      await this.authHelper.storeRefreshToken(refresh, createdUser.id);
+      await this.userModel.transactionCommit();
 &nbsp;
       return { access, refresh };
     } catch (e) {
-      await this.#userModel.transactionRollback();
+      await this.userModel.transactionRollback();
       throw createHttpError(400, 'unable to signup');
     }
   }
 &nbsp;
   async SignIn(email, password) {
     try {
-      const [hash] = await this.#userModel.findPasswordByEmail(email);
-      const isValid = this.#authHelper.comparePassword(hash.password, password);
+      const [hash] = await this.userModel.findPasswordByEmail(email);
+      const isValid = this.authHelper.comparePassword(hash.password, password);
 &nbsp;
       if (isValid) {
-        const [user] = await this.#userModel.findByEmail(email);
+        const [user] = await this.userModel.findByEmail(email);
 &nbsp;
-        const access = this.#authHelper.generateAccessToken(user);
-        const refresh = this.#authHelper.generateRefreshToken();
+        const access = this.authHelper.generateAccessToken(user);
+        const refresh = this.authHelper.generateRefreshToken();
 &nbsp;
-        await this.#authHelper.storeRefreshToken(refresh, user.id);
+        await this.authHelper.storeRefreshToken(refresh, user.id);
 &nbsp;
         return { access, refresh };
       }
@@ -275,7 +281,7 @@ export default class AuthService {
 &nbsp;
   async SignOut(token) {
     try {
-      await this.#authHelper.deleteRefreshToken(token);
+      await this.authHelper.deleteRefreshToken(token);
     } catch {
       throw createHttpError(400, 'unable to signout');
     }
@@ -283,12 +289,12 @@ export default class AuthService {
 &nbsp;
   async RefreshAccessToken(refreshToken, accessToken) {
     try {
-      const { id } = this.#authHelper.decodeAccessToken(accessToken);
-      const [user] = await this.#userModel.findById(id);
+      const { id } = this.authHelper.decodeAccessToken(accessToken);
+      const [user] = await this.userModel.findById(id);
       const isValid =
-        user &amp;&amp; (await this.#authHelper.verifyRefreshToken(refreshToken, id));
+        user &amp;&amp; (await this.authHelper.verifyRefreshToken(refreshToken, id));
       if (isValid) {
-        const access = this.#authHelper.generateAccessToken(user);
+        const access = this.authHelper.generateAccessToken(user);
         return { access };
       }
     } catch (e) {
@@ -304,7 +310,7 @@ export default class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Mar 27 2021 20:02:38 GMT+0900 (GMT+09:00)
+                at Tue Mar 30 2021 23:02:33 GMT+0900 (GMT+09:00)
             </div>
         </div>
         <script src="../prettify.js"></script>
