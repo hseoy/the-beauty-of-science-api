@@ -29,31 +29,6 @@ describe('Post model unit tests', () => {
     await postModel.transactionRollback();
   });
 
-  describe('PostModel.create methods test', () => {
-    it('<PostModel.create> returns created post object', async () => {
-      const [createdPost] = await postModel.create(mockPost);
-      expect(createdPost).toMatchObject(mockPost);
-    });
-  });
-
-  describe('PostModel.delete methods test', () => {
-    let createdPost;
-
-    beforeEach(async () => {
-      [createdPost] = await postModel.create(mockPost);
-    });
-
-    it('<PostModel.deleteBy({id})> returns 1', async () => {
-      const res = await postModel.deleteBy({ id: createdPost.id });
-      expect(res).toBe(1);
-    });
-
-    it('<PostModel.deleteBy({author}) returns 1', async () => {
-      const res = await postModel.deleteBy({ author: createdPost.author });
-      expect(res).toBe(1);
-    });
-  });
-
   describe('PostModel.update methods test', () => {
     let createdPost;
 
@@ -90,61 +65,6 @@ describe('Post model unit tests', () => {
       createdPosts.forEach(async post => {
         await postModel.deleteBy({ id: post.id });
       });
-    });
-
-    it('<PostModel.findAll> returns post object array', async () => {
-      const posts = await postModel.findAll();
-      expect(posts.length).toBe(4);
-      posts.forEach((post, i) => {
-        expect(post).toMatchObject(createdPosts[i]);
-      });
-    });
-
-    it('<PostModel.findBy({id})> returns post object', async () => {
-      const [post] = await postModel.findBy({ id: createdPosts[0].id });
-      expect(post).toMatchObject(createdPosts[0]);
-    });
-
-    it('<PostModel.findBy({author})> returns post object array', async () => {
-      const posts = await postModel.findBy({ author: createdPosts[0].author });
-      expect(posts.length).toBe(2);
-      expect(posts[0]).toMatchObject(createdPosts[0]);
-      expect(posts[1]).toMatchObject(createdPosts[3]);
-    });
-
-    it('<PostModel.findBy({category})> returns post object array', async () => {
-      const posts = await postModel.findBy({
-        category: createdPosts[0].category,
-      });
-      expect(posts.length).toBe(2);
-      expect(posts[0]).toMatchObject(createdPosts[0]);
-      expect(posts[1]).toMatchObject(createdPosts[3]);
-    });
-
-    it('<PostModel.findByOrderBy> returns post object array', async () => {
-      const posts = await postModel.findByOrderBy(
-        {
-          category: createdPosts[0].category,
-        },
-        postModel.created,
-        true,
-      );
-      expect(posts.length).toBe(2);
-      expect(posts[0]).toMatchObject(createdPosts[3]);
-      expect(posts[1]).toMatchObject(createdPosts[0]);
-    });
-
-    it('<PostModel.findByOrderBy> returns post object array', async () => {
-      const posts = await postModel.findByOrderBy(
-        {
-          category: createdPosts[0].category,
-        },
-        postModel.created,
-        false,
-      );
-      expect(posts.length).toBe(2);
-      expect(posts[0]).toMatchObject(createdPosts[0]);
-      expect(posts[1]).toMatchObject(createdPosts[3]);
     });
 
     it('<PostModel.findByOrderByCreated> returns post object array', async () => {
