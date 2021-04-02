@@ -126,7 +126,7 @@ describe('Post model unit tests', () => {
         {
           category: createdPosts[0].category,
         },
-        'created',
+        postModel.created,
         true,
       );
       expect(posts.length).toBe(2);
@@ -139,7 +139,7 @@ describe('Post model unit tests', () => {
         {
           category: createdPosts[0].category,
         },
-        'created',
+        postModel.created,
         false,
       );
       expect(posts.length).toBe(2);

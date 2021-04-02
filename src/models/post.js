@@ -1,47 +1,39 @@
 import Model from './model';
 
 export default class PostModel extends Model {
-  create({ author, category, title, content }) {
+  table = 'posts';
+
+  id = 'id';
+
+  author = 'author';
+
+  category = 'category';
+
+  title = 'title';
+
+  content = 'content';
+
+  created = 'created';
+
+  modified = 'modified';
+
+  create(columns) {
     const now = this.trx.fn.now();
-    return this.trx('posts').returning('*').insert({
-      author,
-      category,
-      title,
-      content,
-      created: now,
-      modified: now,
+    return super.create({ ...columns, created: now, modified: now });
+  }
+
+  updateWith(columns, update) {
+    return super.updateWith(columns, {
+      ...update,
+      modified: this.trx.fn.now(),
     });
   }
 
-  deleteBy(columns) {
-    return this.trx('posts').where(columns).del();
+  findByOrderByCreated(columns, desc) {
+    return this.findByOrderBy(columns, 'created', desc);
   }
 
-  updateWith(columnsFindBy, post) {
-    return this.trx('posts')
-      .where(columnsFindBy)
-      .update({ ...post, modified: this.trx.fn.now() })
-      .returning('*');
-  }
-
-  findAll() {
-    return this.trx('posts').select('*');
-  }
-
-  findBy(columns) {
-    return this.findAll().where(columns);
-  }
-
-  findByOrderBy(columnsFindBy, columnOrderBy, desc) {
-    const order = desc ? 'desc' : 'asc';
-    return this.findBy(columnsFindBy).orderBy(columnOrderBy, order);
-  }
-
-  findByOrderByCreated(columnsFindBy, desc) {
-    return this.findByOrderBy(columnsFindBy, 'created', desc);
-  }
-
-  findByOrderByModified(columnsFindBy, desc) {
-    return this.findByOrderBy(columnsFindBy, 'modified', desc);
+  findByOrderByModified(columns, desc) {
+    return this.findByOrderBy(columns, 'modified', desc);
   }
 }

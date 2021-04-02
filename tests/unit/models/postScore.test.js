@@ -63,7 +63,7 @@ describe('Post score model unit tests', () => {
     });
 
     it('<PostScoreModel.updateWith({id}> returns updated post object', async () => {
-      const [updatedPostScore] = await postScoreModel.updateScoreWith(
+      const [updatedPostScore] = await postScoreModel.updateWith(
         { id: createdPostScore.id },
         createdPostScore.score - 1,
       );
@@ -71,7 +71,7 @@ describe('Post score model unit tests', () => {
     });
 
     it('<PostScoreModel.updateWith({evaluator}> returns updated post object', async () => {
-      const [updatedPostScore] = await postScoreModel.updateScoreWith(
+      const [updatedPostScore] = await postScoreModel.updateWith(
         { evaluator: createdPostScore.evaluator },
         createdPostScore.score - 1,
       );
@@ -108,17 +108,17 @@ describe('Post score model unit tests', () => {
       });
     });
 
-    it('<PostScoreModel.findByPostId> returns post score object', async () => {
-      const [postScore] = await postScoreModel.findByPostId(
-        createdPostScoreList[3].postid,
-      );
+    it('<PostScoreModel.findBy({postid})> returns post score object', async () => {
+      const [postScore] = await postScoreModel.findBy({
+        postid: createdPostScoreList[3].postid,
+      });
       expect(postScore).toMatchObject(createdPostScoreList[3]);
     });
 
-    it('<PostScoreModel.findByEvaluator> returns post score object', async () => {
-      const [postScore] = await postScoreModel.findByEvaluator(
-        createdPostScoreList[0].evaluator,
-      );
+    it('<PostScoreModel.findBy({evaluator})r> returns post score object', async () => {
+      const [postScore] = await postScoreModel.findBy({
+        evaluator: createdPostScoreList[0].evaluator,
+      });
       expect(postScore).toMatchObject(createdPostScoreList[0]);
     });
   });

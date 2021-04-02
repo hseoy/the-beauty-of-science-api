@@ -1,32 +1,17 @@
 import Model from './model';
 
 export default class PostScoreModel extends Model {
-  create({ postid, score, evaluator }) {
-    return this.trx('posts_score')
-      .returning('*')
-      .insert({ postid, score, evaluator });
-  }
+  table = 'posts_score';
 
-  deleteBy(columns) {
-    return this.trx('posts_score').where(columns).del();
-  }
+  id = 'id';
 
-  updateScoreWith(columnsFindBy, score) {
-    return this.trx('posts_score')
-      .where(columnsFindBy)
-      .update({ score })
-      .returning('*');
-  }
+  postid = 'postid';
 
-  findAll() {
-    return this.trx('posts_score').select('*');
-  }
+  score = 'score';
 
-  findByPostId(postid) {
-    return this.findAll().where({ postid });
-  }
+  evaluator = 'evaluator';
 
-  findByEvaluator(evaluator) {
-    return this.findAll().where({ evaluator });
+  updateWith(columns, update) {
+    return super.updateWith(columns, { score: update });
   }
 }
