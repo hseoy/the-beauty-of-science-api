@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/37</span>
+                <span class='fraction'>40/40</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/37</span>
+                <span class='fraction'>40/40</span>
             </div>
         
             
@@ -139,7 +139,19 @@
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,15 +165,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -180,10 +199,9 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -229,21 +247,31 @@ export default class AuthService {
   @Inject('userModel')
   userModel;
 &nbsp;
+  @Inject('userLoginModel')
+  userLoginModel;
+&nbsp;
   @Inject('authHelper')
   authHelper;
 &nbsp;
-  constructor(userModel, authHelper) {
-    this.userModel = userModel;
+  constructor({ authHelper, userModel, userLoginModel } = {}) {
     this.authHelper = authHelper;
+    this.userModel = userModel;
+    this.userLoginModel = userLoginModel;
   }
 &nbsp;
   async SignUp({ username, email, password }) {
-    const hashedPw = this.authHelper.generateHash(password);
-&nbsp;
-    await this.userModel.transactionStart();
+    const trx = await this.userModel.transaction();
     try {
-      await this.userModel.createUserLogin(email, hashedPw);
-      const [createdUser] = await this.userModel.createUser(email, username);
+      await this.userModel.transactionStartWithTrx(trx);
+      await this.userLoginModel.transactionStartWithTrx(trx);
+&nbsp;
+      const [createdUser] = await this.userModel.create({ email, username });
+&nbsp;
+      const hashedPw = this.authHelper.generateHash(password);
+      await this.userLoginModel.create({
+        id: createdUser.id,
+        password: hashedPw,
+      });
 &nbsp;
       const access = this.authHelper.generateAccessToken(createdUser);
       const refresh = this.authHelper.generateRefreshToken();
@@ -258,14 +286,13 @@ export default class AuthService {
     }
   }
 &nbsp;
-  async SignIn(email, password) {
+  async SignIn({ email, password }) {
     try {
-      const [hash] = await this.userModel.findPasswordByEmail(email);
+      const [user] = await this.userModel.findBy({ email });
+      const [hash] = await this.userLoginModel.findBy({ id: user.id });
       const isValid = this.authHelper.comparePassword(hash.password, password);
 &nbsp;
       if (isValid) {
-        const [user] = await this.userModel.findByEmail(email);
-&nbsp;
         const access = this.authHelper.generateAccessToken(user);
         const refresh = this.authHelper.generateRefreshToken();
 &nbsp;
@@ -290,7 +317,7 @@ export default class AuthService {
   async RefreshAccessToken(refreshToken, accessToken) {
     try {
       const { id } = this.authHelper.decodeAccessToken(accessToken);
-      const [user] = await this.userModel.findById(id);
+      const [user] = await this.userModel.findBy({ id });
       const isValid =
         user &amp;&amp; (await this.authHelper.verifyRefreshToken(refreshToken, id));
       if (isValid) {
@@ -310,7 +337,7 @@ export default class AuthService {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Apr 02 2021 19:22:49 GMT+0900 (GMT+09:00)
+                at Sat Apr 03 2021 22:10:44 GMT+0900 (GMT+09:00)
             </div>
         </div>
         <script src="../prettify.js"></script>
