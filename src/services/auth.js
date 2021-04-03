@@ -18,7 +18,7 @@ export default class AuthService {
     this.userLoginModel = userLoginModel;
   }
 
-  async SignUp({ username, email, password }) {
+  async SignUp({ username, email, password } = {}) {
     const trx = await this.userModel.transaction();
     try {
       await this.userModel.transactionStartWithTrx(trx);
@@ -45,7 +45,7 @@ export default class AuthService {
     }
   }
 
-  async SignIn(email, password) {
+  async SignIn({ email, password } = {}) {
     try {
       const [user] = await this.userModel.findBy({ email });
       const [hash] = await this.userLoginModel.findBy({ id: user.id });
