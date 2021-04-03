@@ -13,9 +13,8 @@ const handleSignUp = async (req, res, next) => {
 
 const handleSignIn = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
     const authServiceInstance = Container.get(AuthService);
-    const token = await authServiceInstance.SignIn(email, password);
+    const token = await authServiceInstance.SignIn(req.body);
     return res.status(200).json({ token });
   } catch (e) {
     return next(e);

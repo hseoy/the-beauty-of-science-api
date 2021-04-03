@@ -53,9 +53,7 @@ const handleDeleteCurrentUser = async (req, res, next) => {
 const handleGetCurrentUserAvatar = async (req, res, next) => {
   try {
     const userServiceInstance = Container.get(UserService);
-    const avatar = await userServiceInstance.getAvatarFileByEmail(
-      req.currentUser.email,
-    );
+    const avatar = await userServiceInstance.getAvatarFile(req.currentUser.id);
     return res.status(200).type(avatar.mimetype).sendFile(avatar.path);
   } catch (e) {
     return next(e);
@@ -66,7 +64,7 @@ const handleGetUserAvatar = async (req, res, next) => {
   try {
     const { id } = req.params;
     const userServiceInstance = Container.get(UserService);
-    const avatar = await userServiceInstance.getAvatarFileById(id);
+    const avatar = await userServiceInstance.getAvatarFile(id);
     return res.status(200).type(avatar.mimetype).sendFile(avatar.path);
   } catch (e) {
     return next(e);
@@ -76,7 +74,7 @@ const handleGetUserAvatar = async (req, res, next) => {
 const handleUpdateAvatar = async (req, res, next) => {
   try {
     const userServiceInstance = Container.get(UserService);
-    await userServiceInstance.updateAvatar(req.file, req.currentUser.email);
+    await userServiceInstance.updateAvatar(req.file, req.currentUser.id);
     return res.status(200).end();
   } catch (e) {
     return next(e);
@@ -86,7 +84,7 @@ const handleUpdateAvatar = async (req, res, next) => {
 const handleDeleteAvatar = async (req, res, next) => {
   try {
     const userServiceInstance = Container.get(UserService);
-    await userServiceInstance.deleteAvatar(req.currentUser.email);
+    await userServiceInstance.deleteAvatar(req.currentUser.id);
     return res.status(200).end();
   } catch (e) {
     return next(e);
