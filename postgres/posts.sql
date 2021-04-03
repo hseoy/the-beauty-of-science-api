@@ -6,7 +6,7 @@ BEGIN TRANSACTION;
 
 CREATE TABLE posts (
   id SERIAL NOT NULL PRIMARY KEY,
-  author TEXT NOT NULL,
+  authorid INT NOT NULL,
   category TEXT DEFAULT 'common',
   title TEXT NOT NULL,
   content TEXT NOT NULL,
@@ -18,14 +18,14 @@ CREATE TABLE posts_score (
   id SERIAL NOT NULL PRIMARY KEY,
   postid INT NOT NULL,
   score SMALLINT NOT NULL,
-  evaluator TEXT NOT NULL
+  evaluatorid INT NOT NULL
 );
 
 CREATE TABLE posts_comments (
   id SERIAL NOT NULL PRIMARY KEY,
   postid INT NOT NULL,
   parentid INT DEFAULT 0,
-  author TEXT NOT NULL,
+  authorid INT NOT NULL,
   content TEXT NOT NULL,
   created TIMESTAMP NOT NULL,
   modified TIMESTAMP NOT NULL

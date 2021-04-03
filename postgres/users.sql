@@ -16,13 +16,13 @@ CREATE TABLE users (
 
 CREATE TABLE users_login (
   id SERIAL NOT NULL PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
+  userid INT UNIQUE NOT NULL,
   password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE users_avatar (
   id SERIAL NOT NULL PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
+  userid INT UNIQUE NOT NULL,
   filename TEXT,
   filepath TEXT,
   mimetype TEXT,

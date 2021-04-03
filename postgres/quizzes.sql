@@ -5,7 +5,7 @@ BEGIN TRANSACTION;
 
 CREATE TABLE quizzes (
   id SERIAL NOT NULL PRIMARY KEY,
-  author TEXT NOT NULL,
+  authorid INT NOT NULL,
   title TEXT NOT NULL,
   commentary TEXT NOT NULL,
   answers TEXT[] NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE quizzes (
 
 CREATE TABLE quiz_participant (
   id SERIAL NOT NULL PRIMARY KEY,
-  email TEXT NOT NULL,
+  userid INT NOT NULL,
   quizid INT NOT NULL,
   isright BOOLEAN NOT NULL,
   submitted TIMESTAMP NOT NULL
