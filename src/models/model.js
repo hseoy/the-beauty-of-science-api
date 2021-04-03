@@ -78,11 +78,17 @@ export default class Model {
   }
 
   findBy(columns) {
-    return this.findAll().where(columns);
+    if (this.table) {
+      return this.findAll().where(columns);
+    }
+    return null;
   }
 
   findByOrderBy(columns, orderBy, isDesc) {
-    const order = isDesc ? 'desc' : 'asc';
-    return this.findBy(columns).orderBy(orderBy, order);
+    if (this.table) {
+      const order = isDesc ? 'desc' : 'asc';
+      return this.findBy(columns).orderBy(orderBy, order);
+    }
+    return null;
   }
 }
