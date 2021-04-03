@@ -6,7 +6,7 @@ describe('Post model unit tests', () => {
   let postModel;
 
   const mockPost = {
-    author: 'bruno@foo.com',
+    authorid: 1,
     category: 'common',
     title: 'test_title',
     content: "bruno's post",
@@ -50,10 +50,10 @@ describe('Post model unit tests', () => {
 
     beforeAll(async () => {
       const posts = [
-        { author: 'a@gmail.com', category: 'a', title: '1', content: '1_1' },
-        { author: 'b@gmail.com', category: 'b', title: '2', content: '2_1' },
-        { author: 'c@gmail.com', category: 'c', title: '3', content: '3_1' },
-        { author: 'a@gmail.com', category: 'a', title: '4', content: '1_2' },
+        { authorid: 1, category: 'a', title: '1', content: '1_1' },
+        { authorid: 2, category: 'b', title: '2', content: '2_1' },
+        { authorid: 3, category: 'c', title: '3', content: '3_1' },
+        { authorid: 1, category: 'a', title: '4', content: '1_2' },
       ];
       posts.forEach(async post => {
         const [createdPost] = await postModel.create(post);

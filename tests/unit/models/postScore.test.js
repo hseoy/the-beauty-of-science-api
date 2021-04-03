@@ -8,7 +8,7 @@ describe('Post score model unit tests', () => {
   const mockPostScore = {
     postid: 1,
     score: 5,
-    evaluator: 'bruno@foo.com',
+    evaluatorid: 1,
   };
 
   beforeAll(() => {
@@ -45,7 +45,7 @@ describe('Post score model unit tests', () => {
 
     it('<PostScoreModel.updateWith({evaluator}> returns updated post object', async () => {
       const [updatedPostScore] = await postScoreModel.updateWith(
-        { evaluator: createdPostScore.evaluator },
+        { evaluatorid: createdPostScore.evaluatorid },
         createdPostScore.score - 1,
       );
       expect(updatedPostScore.score).toBe(createdPostScore.score - 1);

@@ -5,7 +5,7 @@ export default class PostModel extends Model {
 
   id = 'id';
 
-  author = 'author';
+  authorid = 'authorid';
 
   category = 'category';
 

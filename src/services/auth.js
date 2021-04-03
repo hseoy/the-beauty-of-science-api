@@ -6,21 +6,31 @@ export default class AuthService {
   @Inject('userModel')
   userModel;
 
+  @Inject('userLoginModel')
+  userLoginModel;
+
   @Inject('authHelper')
   authHelper;
 
-  constructor(userModel, authHelper) {
-    this.userModel = userModel;
+  constructor({ authHelper, userModel, userLoginModel } = {}) {
     this.authHelper = authHelper;
+    this.userModel = userModel;
+    this.userLoginModel = userLoginModel;
   }
 
   async SignUp({ username, email, password }) {
-    const hashedPw = this.authHelper.generateHash(password);
-
-    await this.userModel.transactionStart();
+    const trx = await this.userModel.transaction();
     try {
-      await this.userModel.createUserLogin(email, hashedPw);
-      const [createdUser] = await this.userModel.createUser(email, username);
+      await this.userModel.transactionStartWithTrx(trx);
+      await this.userLoginModel.transactionStartWithTrx(trx);
+
+      const [createdUser] = await this.userModel.create({ email, username });
+
+      const hashedPw = this.authHelper.generateHash(password);
+      await this.userLoginModel.create({
+        id: createdUser.id,
+        password: hashedPw,
+      });
 
       const access = this.authHelper.generateAccessToken(createdUser);
       const refresh = this.authHelper.generateRefreshToken();
@@ -37,12 +47,11 @@ export default class AuthService {
 
   async SignIn(email, password) {
     try {
-      const [hash] = await this.userModel.findPasswordByEmail(email);
+      const [user] = await this.userModel.findBy({ email });
+      const [hash] = await this.userLoginModel.findBy({ id: user.id });
       const isValid = this.authHelper.comparePassword(hash.password, password);
 
       if (isValid) {
-        const [user] = await this.userModel.findByEmail(email);
-
         const access = this.authHelper.generateAccessToken(user);
         const refresh = this.authHelper.generateRefreshToken();
 
@@ -67,7 +76,7 @@ export default class AuthService {
   async RefreshAccessToken(refreshToken, accessToken) {
     try {
       const { id } = this.authHelper.decodeAccessToken(accessToken);
-      const [user] = await this.userModel.findById(id);
+      const [user] = await this.userModel.findBy({ id });
       const isValid =
         user && (await this.authHelper.verifyRefreshToken(refreshToken, id));
       if (isValid) {

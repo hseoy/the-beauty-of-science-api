@@ -9,9 +9,27 @@ export default class UserService {
   @Inject('userModel')
   userModel;
 
-  constructor(userModel, userHelper) {
+  @Inject('userAvatarModel')
+  userAvatarModel;
+
+  @Inject('postModel')
+  postModel;
+
+  @Inject('postScoreModel')
+  postScoreModel;
+
+  constructor({
+    userHelper,
+    userModel,
+    userAvatarModel,
+    postModel,
+    postScoreModel,
+  } = {}) {
     this.userModel = userModel;
     this.userHelper = userHelper;
+    this.userAvatarModel = userAvatarModel;
+    this.postModel = postModel;
+    this.postScoreModel = postScoreModel;
   }
 
   async findAllUserIds() {
@@ -26,7 +44,7 @@ export default class UserService {
 
   async findUser(id) {
     try {
-      const [user] = await this.userModel.findById(id);
+      const [user] = await this.userModel.findBy({ id });
       return user;
     } catch (e) {
       throw createHttpError(400, 'unable to find user');
@@ -36,9 +54,10 @@ export default class UserService {
   async updateUser(id, user) {
     try {
       const { username } = user;
-      const [updatedUser] = await this.userModel.updateUserWithId(id, {
-        username,
-      });
+      const [updatedUser] = await this.userModel.updateWith(
+        { id },
+        { username },
+      );
       return updatedUser;
     } catch (e) {
       throw createHttpError(400, 'unable to update user');
@@ -46,16 +65,32 @@ export default class UserService {
   }
 
   async deleteUser(id) {
+    const trx = await this.userModel.transaction();
     try {
-      await this.userModel.deleteById(id);
+      await this.userModel.transactionStartWithTrx(trx);
+      await this.userAvatarModel.transactionStartWithTrx(trx);
+      await this.postModel.transactionStartWithTrx(trx);
+      await this.postScoreModel.transactionStartWithTrx(trx);
+
+      const [avatar] = await this.userAvatarModel.findBy({ userid: id });
+
+      await this.userModel.deleteBy({ id });
+      await this.userAvatarModel.deleteBy({ userid: id });
+      await this.postModel.deleteBy({ authorid: id });
+      await this.postScoreModel.deleteBy({ evaluatorid: id });
+
+      await this.userHelper.deleteAvatarFile(avatar.filepath);
+
+      await this.userModel.transactionCommit();
     } catch (e) {
+      await this.userModel.transactionRollback();
       throw createHttpError(400, 'unable to delete user');
     }
   }
 
-  async getAvatarFileByEmail(email) {
+  async getAvatarFile(userid) {
     try {
-      const [avatar] = await this.userModel.findAvatarByEmail(email);
+      const [avatar] = await this.userAvatarModel.findBy({ userid });
       const avatarFilePath = this.userHelper.getAvatarFilePath(avatar.filepath);
       return { mimetype: avatar.mimetype, path: avatarFilePath };
     } catch (e) {
@@ -63,42 +98,31 @@ export default class UserService {
     }
   }
 
-  async getAvatarFileById(id) {
-    try {
-      const user = await this.findUser(id);
-      return this.getAvatarFileByEmail(user.email);
-    } catch (e) {
-      throw createHttpError(400, 'unable to get avatar image');
-    }
-  }
-
-  async updateAvatar(file, email) {
+  async updateAvatar(file, userid) {
     try {
       const { filename, mimetype, size, path } = file;
-      await this.deleteBeforeAvatar(email);
-      await this.userModel.updateAvatar(email, filename, path, mimetype, size);
+      const [avatar] = await this.userAvatarModel.findBy({ userid });
+      const updatedAvatar = await this.userAvatarModel.updateWith({
+        userid,
+        filename,
+        path,
+        mimetype,
+        size,
+      });
+      await this.userHelper.deleteAvatarFile(avatar.filepath);
+      return updatedAvatar;
     } catch (e) {
       throw createHttpError(400, 'unable to update avatar');
     }
   }
 
-  async deleteAvatar(email) {
+  async deleteAvatar(userid) {
     try {
-      await this.deleteBeforeAvatar(email);
-      await this.userModel.deleteAvatarByEmail(email);
+      const [avatar] = await this.userAvatarModel.findBy({ userid });
+      await this.userAvatarModel.deleteBy({ userid });
+      await this.userHelper.deleteAvatarFile(avatar.filepath);
     } catch (e) {
       throw createHttpError(400, 'unable to delete avatar');
-    }
-  }
-
-  async deleteBeforeAvatar(email) {
-    try {
-      const [beforeAvatar] = await this.userModel.findAvatarByEmail(email);
-      if (beforeAvatar) {
-        await this.userHelper.deleteAvatarFile(beforeAvatar.filepath);
-      }
-    } catch (e) {
-      throw new Error(e);
     }
   }
 }

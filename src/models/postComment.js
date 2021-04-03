@@ -9,7 +9,7 @@ export default class PostCommentModel extends Model {
 
   parentid = 'parentid';
 
-  author = 'author';
+  authorid = 'authorid';
 
   content = 'content';
 

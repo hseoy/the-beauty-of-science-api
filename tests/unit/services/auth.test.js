@@ -1,6 +1,5 @@
-import AuthService from '@/services/auth';
 import createHttpError from 'http-errors';
-import { Container } from 'typedi';
+import AuthService from '@/services/auth';
 
 describe('Auth service unit tests', () => {
   const mockAccessToken = 'ACCESS';
@@ -13,22 +12,22 @@ describe('Auth service unit tests', () => {
   };
 
   describe('AuthService constructor tests', () => {
-    Container.set('authHelper', {});
-    Container.set('userModel', {});
     const authServiceInstance = new AuthService();
 
-    it('<AuthService.constructor> dependency injection', () => {
-      expect(typeof authServiceInstance).toBe(typeof {});
+    it('<AuthService.constructor> properties are undefined', () => {
+      expect(authServiceInstance.authHelper).toBeUndefined();
+      expect(authServiceInstance.userModel).toBeUndefined();
+      expect(authServiceInstance.userLoginiModel).toBeUndefined();
     });
   });
 
   describe('AuthService.Signup method tests', () => {
-    const userModel = {
-      transactionStart: jest.fn(),
+    const model = {
+      transaction: jest.fn(),
+      transactionStartWithTrx: jest.fn(),
       transactionCommit: jest.fn(),
       transactionRollback: jest.fn(),
-      createUserLogin: jest.fn(),
-      createUser: jest.fn(),
+      create: jest.fn(),
     };
     const authHelper = {
       generateHash: jest.fn(),
@@ -36,12 +35,16 @@ describe('Auth service unit tests', () => {
       generateRefreshToken: jest.fn(),
       storeRefreshToken: jest.fn(),
     };
-    const authServiceInstance = new AuthService(userModel, authHelper);
+    const authServiceInstance = new AuthService({
+      userModel: model,
+      userLoginModel: model,
+      authHelper,
+    });
 
     it('<AuthService.SignUp> returns token object', async () => {
       authHelper.generateAccessToken.mockReturnValueOnce(mockAccessToken);
       authHelper.generateRefreshToken.mockReturnValueOnce(mockRefreshToken);
-      userModel.createUser.mockResolvedValue([{}]);
+      model.create.mockResolvedValue([{}]);
 
       const res = await authServiceInstance.SignUp(mockUser);
       expect(res).toEqual({
@@ -51,7 +54,7 @@ describe('Auth service unit tests', () => {
     });
 
     it('<AuthService.SignUp> throw http error(unable to signup)', async () => {
-      userModel.createUser.mockRejectedValue(new Error('ERROR'));
+      model.create.mockRejectedValue(new Error('ERROR'));
       await expect(authServiceInstance.SignUp(mockUser)).rejects.toThrow(
         createHttpError(400, 'unable to signup'),
       );
@@ -59,11 +62,8 @@ describe('Auth service unit tests', () => {
   });
 
   describe('AuthService.SignIn method tests', () => {
-    const userModel = {
-      findPasswordByEmail: jest
-        .fn()
-        .mockResolvedValue([{ password: mockUser.password }]),
-      findByEmail: jest.fn().mockResolvedValue([mockUser]),
+    const model = {
+      findBy: jest.fn().mockResolvedValue([mockUser]),
     };
     const authHelper = {
       comparePassword: jest.fn(),
@@ -71,7 +71,11 @@ describe('Auth service unit tests', () => {
       generateRefreshToken: jest.fn(),
       storeRefreshToken: jest.fn(),
     };
-    const authServiceInstance = new AuthService(userModel, authHelper);
+    const authServiceInstance = new AuthService({
+      userModel: model,
+      userLoginModel: model,
+      authHelper,
+    });
 
     beforeEach(() => {
       authHelper.generateAccessToken.mockReturnValueOnce(mockAccessToken);
@@ -111,11 +115,11 @@ describe('Auth service unit tests', () => {
     });
   });
 
-  describe('AuthService.SignIn method tests', () => {
+  describe('AuthService.SignOut method tests', () => {
     const authHelper = {
       deleteRefreshToken: jest.fn(),
     };
-    const authServiceInstance = new AuthService({}, authHelper);
+    const authServiceInstance = new AuthService({ authHelper });
 
     it('<AuthService.SignOut> does not return', async () => {
       const res = await authServiceInstance.SignOut('token');
@@ -132,14 +136,14 @@ describe('Auth service unit tests', () => {
 
   describe('AuthService.RefreshAccessToken method tests', () => {
     const userModel = {
-      findById: jest.fn().mockResolvedValue([mockUser]),
+      findBy: jest.fn().mockResolvedValue([mockUser]),
     };
     const authHelper = {
       decodeAccessToken: jest.fn(),
       verifyRefreshToken: jest.fn(),
       generateAccessToken: jest.fn(),
     };
-    const authServiceInstance = new AuthService(userModel, authHelper);
+    const authServiceInstance = new AuthService({ userModel, authHelper });
 
     beforeEach(() => {
       authHelper.decodeAccessToken.mockReturnValueOnce({ id: mockUser.id });
@@ -166,7 +170,7 @@ describe('Auth service unit tests', () => {
     });
 
     it('<AuthService.RefreshAccessToken> throw http error(Unauthorized)', async () => {
-      userModel.findById.mockRejectedValue(new Error('ERROR'));
+      userModel.findBy.mockRejectedValue(new Error('ERROR'));
       await expect(
         authServiceInstance.RefreshAccessToken(
           mockRefreshToken,

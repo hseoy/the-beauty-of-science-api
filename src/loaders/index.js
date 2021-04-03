@@ -1,7 +1,6 @@
-import { UserModel } from '@/models';
 import bcrypt from 'bcrypt';
-import authHelper from '@/helpers/auth';
-import userHelper from '@/helpers/user';
+import models from '@/models';
+import helpers from '@/helpers';
 import expressLoader from './express';
 import dependencyInjectorLoader from './dependencyInjector';
 import postgresLoader from './postgres';
@@ -16,14 +15,21 @@ export default ({ expressApp }) => {
 
   dependencyInjectorLoader.prepare({ db, redisClient, bcrypt });
 
-  const helpers = [
-    { name: 'authHelper', helper: authHelper },
-    { name: 'userHelper', helper: userHelper },
-  ];
-  dependencyInjectorLoader.helpers(helpers);
+  const helperList = Object.keys(helpers).map(helper => ({
+    name: helper,
+    helper: helpers[helper],
+  }));
+  dependencyInjectorLoader.helpers(helperList);
 
-  const userModel = { name: 'userModel', model: new UserModel() };
-  dependencyInjectorLoader.models([userModel]);
+  const modelList = [
+    { name: 'userModel', model: new models.UserModel() },
+    { name: 'userAvatarModel', model: new models.UserAvatarModel() },
+    { name: 'userLoginModel', model: new models.UserLoginModel() },
+    { name: 'postModel', model: new models.PostModel() },
+    { name: 'postCommentModel', model: new models.PostCommentModel() },
+    { name: 'postScoreModel', model: new models.PostScoreModel() },
+  ];
+  dependencyInjectorLoader.models(modelList);
   console.info('✌️  Dependency Injector loaded');
 
   expressLoader({ app: expressApp });

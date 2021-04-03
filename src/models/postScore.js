@@ -9,7 +9,7 @@ export default class PostScoreModel extends Model {
 
   score = 'score';
 
-  evaluator = 'evaluator';
+  evaluatorid = 'evaluatorid';
 
   updateWith(columns, update) {
     return super.updateWith(columns, { score: update });

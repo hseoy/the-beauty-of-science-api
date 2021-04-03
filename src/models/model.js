@@ -16,13 +16,13 @@ export default class Model {
     this.table = '';
   }
 
-  get transaction() {
+  async transaction() {
+    this.#trxProvider = this.#db.transactionProvider();
     return this.#trxProvider();
   }
 
   async transactionStart() {
-    this.#trxProvider = this.#db.transactionProvider();
-    this.trx = await this.#trxProvider();
+    this.trx = await this.transaction();
   }
 
   async transactionStartWithTrx(trx) {
