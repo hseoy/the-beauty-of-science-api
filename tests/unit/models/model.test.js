@@ -127,8 +127,19 @@ describe('Model unit tests', () => {
           'score',
           true,
         );
+        expect(foundDataList.length).toBe(2);
         expect(foundDataList[0]).toMatchObject(createdDataList[0]);
         expect(foundDataList[1]).toMatchObject(createdDataList[3]);
+      });
+
+      it('<Model.findByOrderBy({offset, limit})> returns data list', async () => {
+        const foundDataList = await model.findByOrderBy({}, 'postid', false, {
+          offset: 2,
+          limit: 2,
+        });
+        expect(foundDataList.length).toBe(2);
+        expect(foundDataList[0]).toMatchObject(createdDataList[1]);
+        expect(foundDataList[1]).toMatchObject(createdDataList[2]);
       });
     });
   });

@@ -70,24 +70,31 @@ export default class Model {
     return null;
   }
 
-  findAll() {
+  findAll({ offset, limit } = {}) {
     if (this.table) {
-      return this.trx(this.table).select('*');
+      const query = this.trx(this.table).select('*');
+      if (limit) {
+        query.limit(limit);
+      }
+      if (offset) {
+        query.offset(offset);
+      }
+      return query;
     }
     return null;
   }
 
-  findBy(columns) {
+  findBy(columns, { offset, limit } = {}) {
     if (this.table) {
-      return this.findAll().where(columns);
+      return this.findAll({ offset, limit }).where(columns);
     }
     return null;
   }
 
-  findByOrderBy(columns, orderBy, isDesc) {
+  findByOrderBy(columns, orderBy, isDesc, { offset, limit } = {}) {
     if (this.table) {
       const order = isDesc ? 'desc' : 'asc';
-      return this.findBy(columns).orderBy(orderBy, order);
+      return this.findBy(columns, { offset, limit }).orderBy(orderBy, order);
     }
     return null;
   }

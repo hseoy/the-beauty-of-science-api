@@ -29,11 +29,11 @@ export default class PostModel extends Model {
     });
   }
 
-  findByOrderByCreated(columns, desc) {
-    return this.findByOrderBy(columns, this.created, desc);
+  findByOrderByCreated(columns, desc, { offset, limit } = {}) {
+    return this.findByOrderBy(columns, this.created, desc, { offset, limit });
   }
 
-  findByOrderByModified(columns, desc) {
-    return this.findByOrderBy(columns, this.modified, desc);
+  findByOrderByModified(columns, desc, { offset, limit } = {}) {
+    return this.findByOrderBy(columns, this.modified, desc, { offset, limit });
   }
 }
