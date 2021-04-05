@@ -30,10 +30,10 @@ export default class PostModel extends Model {
   }
 
   findByOrderByCreated(columns, desc) {
-    return this.findByOrderBy(columns, 'created', desc);
+    return this.findByOrderBy(columns, this.created, desc);
   }
 
   findByOrderByModified(columns, desc) {
-    return this.findByOrderBy(columns, 'modified', desc);
+    return this.findByOrderBy(columns, this.modified, desc);
   }
 }
