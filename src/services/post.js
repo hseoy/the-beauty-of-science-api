@@ -56,6 +56,21 @@ export default class PostService {
     }
   }
 
+  async createPost(authorid, post) {
+    try {
+      const { title, content, category } = post;
+      const [createdPost] = await this.postModel.create({
+        authorid,
+        title,
+        content,
+        category,
+      });
+      return createdPost;
+    } catch (e) {
+      throw createHttpError(400, 'unable to create post');
+    }
+  }
+
   async updatePost(id, post) {
     try {
       const { title, content, category } = post;

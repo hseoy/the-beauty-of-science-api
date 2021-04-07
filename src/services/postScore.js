@@ -25,6 +25,19 @@ export default class PostService {
     }
   }
 
+  async createPostScore(postid, userid, score) {
+    try {
+      const [createdScore] = await this.postScoreModel.create({
+        evaluatorid: userid,
+        postid,
+        score,
+      });
+      return createdScore;
+    } catch (e) {
+      throw createHttpError(400, 'unable to create score');
+    }
+  }
+
   async updatePostScore(postid, userid, score) {
     try {
       const [updatedScore] = await this.postScoreModel.updateWith(

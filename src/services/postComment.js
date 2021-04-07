@@ -34,6 +34,21 @@ export default class PostService {
     }
   }
 
+  async createComment(authorid, comment) {
+    try {
+      const { postid, parentid, content } = comment;
+      const [createdComment] = await this.postCommentModel.create({
+        authorid,
+        postid,
+        parentid,
+        content,
+      });
+      return createdComment;
+    } catch (e) {
+      throw createHttpError(400, 'unable to create comment');
+    }
+  }
+
   async updateComment(id, comment) {
     try {
       const { parentid, content } = comment;
