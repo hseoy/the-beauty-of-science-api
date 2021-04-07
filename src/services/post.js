@@ -71,11 +71,11 @@ export default class PostService {
     }
   }
 
-  async updatePost(id, post) {
+  async updatePost(authorid, id, post) {
     try {
       const { title, content, category } = post;
       const [updatedPost] = await this.postModel.updateWith(
-        { id },
+        { authorid, id },
         { title, content, category },
       );
       return updatedPost;
@@ -84,14 +84,17 @@ export default class PostService {
     }
   }
 
-  async deletePost(id) {
+  async deletePost(authorid, id) {
     const trx = await this.postModel.transaction();
     try {
       await this.postModel.transactionStartWithTrx(trx);
       await this.postScoreModel.transactionStartWithTrx(trx);
       await this.postCommentModel.transactionStartWithTrx(trx);
 
-      await this.postModel.deleteBy({ id });
+      const isDeleted = await this.postModel.deleteBy({ authorid, id });
+      if (isDeleted === 0) {
+        throw new Error('not found post');
+      }
       await this.postScoreModel.deleteBy({ postid: id });
       await this.postCommentModel.deleteBy({ postid: id });
 

@@ -49,11 +49,11 @@ export default class PostService {
     }
   }
 
-  async updateComment(id, comment) {
+  async updateComment(authorid, id, comment) {
     try {
       const { parentid, content } = comment;
       const [updatedComment] = await this.postCommentModel.updateWith(
-        { id },
+        { authorid, id },
         { parentid, content },
       );
       return updatedComment;
@@ -62,13 +62,13 @@ export default class PostService {
     }
   }
 
-  async deleteComment(id) {
-    await this.postCommentModel.transactionStart();
+  async deleteComment(authorid, id) {
     try {
-      await this.postCommentModel.deleteBy({ id });
-      await this.postCommentModel.transactionCommit();
+      const isDeleted = await this.postCommentModel.deleteBy({ authorid, id });
+      if (isDeleted === 0) {
+        throw new Error('not found post comment');
+      }
     } catch (e) {
-      await this.postCommentModel.transactionRollback();
       throw createHttpError(400, 'unable to delete comment');
     }
   }
