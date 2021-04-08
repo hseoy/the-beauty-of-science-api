@@ -69,27 +69,21 @@ const handleDeletePost = async (req, res, next) => {
   }
 };
 
-const handleGetPostCommentIds = async (req, res, next) => {
+const handleGetPostCommentOrIds = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { offset, limit } = req.query;
+    const { commentid, offset, limit } = req.query;
     const postCommentServiceInstance = Container.get(PostCommentService);
+
+    if (commentid) {
+      const comment = postCommentServiceInstance.findComment(commentid);
+      return res.status(200).json({ comment });
+    }
     const postCommentIds = await postCommentServiceInstance.findPostCommentIds(
       id,
       { offset, limit },
     );
     return res.status(200).json({ comments: postCommentIds });
-  } catch (e) {
-    return next(e);
-  }
-};
-
-const handleGetPostComment = async (req, res, next) => {
-  try {
-    const { commentid } = req.query;
-    const postCommentServiceInstance = Container.get(PostCommentService);
-    const comment = postCommentServiceInstance.findComment(commentid);
-    return res.status(200).json({ comment });
   } catch (e) {
     return next(e);
   }
@@ -199,8 +193,7 @@ const postController = {
   handleCreatePost,
   handleUpdatePost,
   handleDeletePost,
-  handleGetPostCommentIds,
-  handleGetPostComment,
+  handleGetPostCommentOrIds,
   handleCreatePostComment,
   handleUpdatePostComment,
   handleDeletePostComment,
