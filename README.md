@@ -152,21 +152,21 @@ Environment variables can be set by writing in the `.env` file.
 
 We defined some commands for convenience:
 
-- `npm run start` : Run the server in production mode
+- `yarn start` : Run the server in production mode
 
-- `npm run dev` : Run the server in development mode
+- `yarn dev` : Run the server in development mode
 
-- `npm run lint` : Run eslint
+- `yarn lint` : Run eslint
 
-- `npm run lint:fix` : Run Eslint to fix the errors
+- `yarn lint:fix` : Run Eslint to fix the errors
 
-- `npm run build` : Build code
+- `yarn build` : Build code
 
-- `npm run predeploy` : Prepare for deployment
+- `yarn predeploy` : Prepare for deployment
 
-- `npm run test` : Run test code
+- `yarn test` : Run test code
 
-- `npm run coverage` : Run test code and generates a coverage report.
+- `yarn coverage` : Run test code and generates a coverage report.
 
 **[⬆ Back to Top](#Table-of-content)**
 
@@ -177,11 +177,11 @@ We defined some commands for convenience:
 > You can execute the test code using the commands below
 
 ```
-$ npm run test
-$ npm run coverage
+$ yarn test
+$ yarn coverage
 ```
 
-The command `npm run coverage` generates a coverage report, which can be found [here](https://hseoy.github.io/the-beauty-of-science-api/coverage/)
+The command `yarn coverage` generates a coverage report, which can be found [here](https://hseoy.github.io/the-beauty-of-science-api/coverage/)
 
 **[⬆ Back to Top](#Table-of-content)**
 
@@ -206,10 +206,10 @@ $ git checkout main
 $ git worktree add dist deploy
 ```
 
-3. Build
+3. Run `yarn predeploy`
 
 ```
-$ npm run build
+$ yarn predeploy
 ```
 
 4. Deploy to heroku after commit
