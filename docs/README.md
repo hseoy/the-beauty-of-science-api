@@ -55,10 +55,10 @@
   - password(String): user password
 - response header:
   - `Content-Type`: `application/json`
+  - `Set-Cookie`:
+    - `X-Refresh-Token` : Refresh Token(JWT)
 - response body:
-  - token(Object): token object
-    - access(String): Access Token(JWT)
-    - refresh(String): Refresh Token(JWT)
+  - access(String): Access Token(JWT)
 - error response:
   - `400 unable to signup`
 
@@ -75,10 +75,10 @@
   - password(String): user password
 - response header:
   - `Content-Type`: `application/json`
+  - `Set-Cookie`:
+    - `X-Refresh-Token` : Refresh Token(JWT)
 - response body:
-  - token(Object): token object
-    - access(String): Access Token(JWT)
-    - refresh(String): Refresh Token(JWT)
+  - access(String): Access Token(JWT)
 - error response:
   - `400 unable to signin`
 
@@ -88,6 +88,8 @@
 
 - request header:
   - `Authorization`: `Bearer ACCESS_TOKEN`
+  - `Set-Cookie`:
+    - `X-Refresh-Token` : Refresh Token(JWT)
 - path variable: X
 - query string: X
 - request body: X
@@ -98,20 +100,18 @@
 
 **[⬆ Back to Top](#table-of-content)**
 
-### POST /api/auth/refresh
+### GET /api/auth/refresh
 
 - request header:
-  - `Content-Type`: `application/json`
-  - `Authorization`: `Bearer REFRESH_TOKEN`
+  - `Authorization`: `Bearer ACCESS_TOKEN`
+  - `Set-Cookie`:
+    - `X-Refresh-Token` : Refresh Token(JWT)
 - path variable: X
 - query string: X
-- request body:
-  - access(String): expired access token
 - response header:
   - `Content-Type`: `application/json`
 - response body:
-  - token(Object): token object
-    - access(String): Access Token(JWT)
+  - access(String): Access Token(JWT)
 - error response:
   - `401 Unauthorized`
 

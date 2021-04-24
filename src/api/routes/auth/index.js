@@ -18,10 +18,10 @@ export default app => {
     controller.handleSignOut,
   );
 
-  route.post(
+  route.get(
     '/refresh',
     middlewares.isAuth,
-    middlewares.isRefreshToken,
+    middlewares.isAccessToken,
     controller.handleRefresh,
   );
 };

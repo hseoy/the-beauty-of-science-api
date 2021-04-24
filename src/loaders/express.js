@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import routes from '@/api';
 import config from '@/config';
@@ -13,7 +14,8 @@ export default ({ app }) => {
       },
     }),
   );
-  app.use(cors());
+  app.use(cors({ credentials: true }));
+  app.use(cookieParser());
   app.use(express.json());
   app.get('/', (_req, res) => {
     res.json('This server is working.');

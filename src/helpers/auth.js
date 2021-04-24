@@ -27,6 +27,25 @@ const generateRefreshToken = generateToken(
   false,
 );
 
+const getJwtExpiresIn = (type, time = 's') => {
+  let expire = 0;
+  if (type === REFRESH_TOKEN) {
+    expire = 60 * 60 * config.jwt.expire.refresh;
+  }
+  if (type === ACCESS_TOKEN) {
+    expire = 60 * 60 * config.jwt.expire.access;
+  }
+  if (time === 'ms') {
+    expire *= 1000;
+  }
+  return expire;
+};
+
+const getAccessExpiresIn = () => getJwtExpiresIn(ACCESS_TOKEN);
+const getRefreshExpiresIn = () => getJwtExpiresIn(REFRESH_TOKEN);
+const getAccessExpiresInMs = () => getJwtExpiresIn(ACCESS_TOKEN, 'ms');
+const getRefreshExpiresInMs = () => getJwtExpiresIn(REFRESH_TOKEN, 'ms');
+
 const decodeToken = subject => token => {
   const decode = jwt.verify(token, config.jwt.secret, {
     algorithms: [config.jwt.algorithm],
@@ -72,6 +91,10 @@ const verifyRefreshToken = async (token, id) => {
 const authHelper = {
   generateAccessToken,
   generateRefreshToken,
+  getAccessExpiresIn,
+  getRefreshExpiresIn,
+  getAccessExpiresInMs,
+  getRefreshExpiresInMs,
   decodeAccessToken,
   decodeRefreshToken,
   generateHash,

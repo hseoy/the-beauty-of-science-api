@@ -4,8 +4,16 @@ import AuthService from '@/services/auth';
 const handleSignUp = async (req, res, next) => {
   try {
     const authServiceInstance = Container.get(AuthService);
-    const token = await authServiceInstance.SignUp(req.body);
-    return res.status(201).json({ token });
+    const authHelper = Container.get('authHelper');
+
+    const { access, refresh } = await authServiceInstance.SignUp(req.body);
+
+    res.cookie('X-Refresh-Token', refresh, {
+      expires: new Date(Date.now() + authHelper.getRefreshExpiresInMs()),
+      secure: false,
+      httpOnly: true,
+    });
+    return res.status(201).json({ access });
   } catch (e) {
     return next(e);
   }
@@ -14,8 +22,16 @@ const handleSignUp = async (req, res, next) => {
 const handleSignIn = async (req, res, next) => {
   try {
     const authServiceInstance = Container.get(AuthService);
-    const token = await authServiceInstance.SignIn(req.body);
-    return res.status(200).json({ token });
+    const authHelper = Container.get('authHelper');
+
+    const { access, refresh } = await authServiceInstance.SignIn(req.body);
+
+    res.cookie('X-Refresh-Token', refresh, {
+      expires: new Date(Date.now() + authHelper.getRefreshExpiresInMs()),
+      secure: false,
+      httpOnly: true,
+    });
+    return res.status(200).json({ access });
   } catch (e) {
     return next(e);
   }
@@ -24,8 +40,11 @@ const handleSignIn = async (req, res, next) => {
 const handleSignOut = async (req, res, next) => {
   try {
     const authServiceInstance = Container.get(AuthService);
-    const token = req.headers.authorization.split(' ')[1];
-    await authServiceInstance.SignOut(token);
+    const refreshToken = req.cookies['X-Refresh-Token'];
+
+    await authServiceInstance.SignOut(refreshToken);
+
+    res.clearCookie('X-Refresh-Token');
     return res.status(200).end();
   } catch (e) {
     return next(e);
@@ -33,14 +52,18 @@ const handleSignOut = async (req, res, next) => {
 };
 
 const handleRefresh = async (req, res, next) => {
-  const authServiceInstance = Container.get(AuthService);
-
   try {
-    const { access } = req.body;
-    const refresh = req.headers.authorization.split(' ')[1];
-    const token = await authServiceInstance.RefreshAccessToken(refresh, access);
+    const authServiceInstance = Container.get(AuthService);
 
-    return res.status(200).json({ token });
+    const refreshToken = req.cookies['X-Refresh-Token'];
+    const accessToken = req.headers.authorization.split(' ')[1];
+
+    const { access } = await authServiceInstance.RefreshAccessToken(
+      refreshToken,
+      accessToken,
+    );
+
+    return res.status(200).json({ access });
   } catch (e) {
     return next(e);
   }
