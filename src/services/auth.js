@@ -28,7 +28,7 @@ export default class AuthService {
 
       const hashedPw = this.authHelper.generateHash(password);
       await this.userLoginModel.create({
-        id: createdUser.id,
+        userid: createdUser.id,
         password: hashedPw,
       });
 
@@ -40,6 +40,7 @@ export default class AuthService {
 
       return { access, refresh };
     } catch (e) {
+      console.log(e);
       await this.userModel.transactionRollback();
       throw createHttpError(400, 'unable to signup');
     }
