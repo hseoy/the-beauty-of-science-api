@@ -13,7 +13,7 @@ Deployed by Heroku : [Click!](https://the-beauty-of-science-api.herokuapp.com/)
   - [Common environment variables](#common-environment-variables)
   - [Development environment variables](#development-environment-variables)
   - [Production environment variables](#production-environment-variables)
-- [Npm custom commands](#npm-custom-commands)
+- [Yarn custom commands](#yarn-custom-commands)
 - [Test and coverage](#test-and-coverage)
 - [Deployment](#deployment)
 - [LICENSE](#license)
@@ -90,10 +90,10 @@ $ psql the_beauty_of_science
 $ the_beauty_of_science=# \d
 ```
 
-4. install the packages through npm
+4. install the packages through yarn
 
 ```
-npm install
+yarn install
 ```
 
 **[⬆ Back to Top](#Table-of-content)**
@@ -148,13 +148,13 @@ Environment variables can be set by writing in the `.env` file.
 
 ---
 
-## Npm custom commands
+## Yarn custom commands
 
 We defined some commands for convenience:
 
 - `yarn start` : Run the server in production mode
 
-- `yarn dev` : Run the server in development mode
+- `yarn start:dev` : Run the server in development mode
 
 - `yarn lint` : Run eslint
 
