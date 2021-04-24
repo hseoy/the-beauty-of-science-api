@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "build": "babel src -d dist -D --quiet",
-    "predeploy": "npm run build && cp .env dist/.env && cp dist_package.json dist/package.json && cp .gitignore dist/.gitignore",
+    "predeploy": "npm run build && cp .env dist/.env && cp .dist.package.json dist/package.json && cp .dist.gitignore dist/.gitignore",
     "test": "./postgres/create_tables.sh && env-cmd -f .env.dev jest",
     "coverage": "./postgres/create_tables.sh && env-cmd -f .env.dev jest --coverage"
   },
