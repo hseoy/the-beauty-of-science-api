@@ -4,7 +4,7 @@ import { Container } from 'typedi';
 const attachCurrentUser = async (req, _res, next) => {
   try {
     const userModel = Container.get('userModel');
-    const [user] = await userModel.findById(req.token.id);
+    const [user] = await userModel.findBy({ id: req.token.id });
     if (!user) {
       return next(createHttpError(401, 'Unauthorized'));
     }
