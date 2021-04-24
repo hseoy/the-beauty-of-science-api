@@ -49,7 +49,7 @@ export default class AuthService {
   async SignIn({ email, password }) {
     try {
       const [user] = await this.userModel.findBy({ email });
-      const [hash] = await this.userLoginModel.findBy({ id: user.id });
+      const [hash] = await this.userLoginModel.findBy({ userid: user.id });
       const isValid = this.authHelper.comparePassword(hash.password, password);
 
       if (isValid) {
