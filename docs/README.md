@@ -61,6 +61,8 @@
   - access(String): Access Token(JWT)
 - error response:
   - `400 unable to signup`
+  - `400 invalid password`
+  - `409 account already exists`
 
 **[⬆ Back to Top](#table-of-content)**
 

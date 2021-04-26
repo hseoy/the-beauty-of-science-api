@@ -28,12 +28,14 @@ describe('Auth service unit tests', () => {
       transactionCommit: jest.fn(),
       transactionRollback: jest.fn(),
       create: jest.fn(),
+      findBy: jest.fn(),
     };
     const authHelper = {
       generateHash: jest.fn(),
       generateAccessToken: jest.fn(),
       generateRefreshToken: jest.fn(),
       storeRefreshToken: jest.fn(),
+      passwordValidate: jest.fn(),
     };
     const authServiceInstance = new AuthService({
       userModel: model,
@@ -42,6 +44,7 @@ describe('Auth service unit tests', () => {
     });
 
     it('<AuthService.SignUp> returns token object', async () => {
+      authHelper.passwordValidate.mockReturnValueOnce(true);
       authHelper.generateAccessToken.mockReturnValueOnce(mockAccessToken);
       authHelper.generateRefreshToken.mockReturnValueOnce(mockRefreshToken);
       model.create.mockResolvedValue([{}]);
@@ -54,9 +57,25 @@ describe('Auth service unit tests', () => {
     });
 
     it('<AuthService.SignUp> throw http error(unable to signup)', async () => {
+      authHelper.passwordValidate.mockReturnValueOnce(true);
       model.create.mockRejectedValue(new Error('ERROR'));
       await expect(authServiceInstance.SignUp(mockUser)).rejects.toThrow(
         createHttpError(400, 'unable to signup'),
+      );
+    });
+
+    it('<AuthService.SignUp> throw http error(account already exists)', async () => {
+      model.findBy.mockResolvedValue(mockUser);
+      await expect(authServiceInstance.SignUp(mockUser)).rejects.toThrow(
+        createHttpError(409, 'account already exists'),
+      );
+      model.findBy.mockResolvedValue(null);
+    });
+
+    it('<AuthService.SignUp> throw http error(invalid password)', async () => {
+      authHelper.passwordValidate.mockReturnValueOnce(false);
+      await expect(authServiceInstance.SignUp(mockUser)).rejects.toThrow(
+        createHttpError(400, 'invalid password'),
       );
     });
   });
