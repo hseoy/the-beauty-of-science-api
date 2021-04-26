@@ -105,7 +105,7 @@ export default class UserService {
       const updatedAvatar = await this.userAvatarModel.updateWith({
         userid,
         filename,
-        path,
+        filepath: path,
         mimetype,
         size,
       });
