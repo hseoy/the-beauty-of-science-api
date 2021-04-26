@@ -28,7 +28,7 @@ describe('Auth service unit tests', () => {
       transactionCommit: jest.fn(),
       transactionRollback: jest.fn(),
       create: jest.fn(),
-      findBy: jest.fn(),
+      findBy: jest.fn().mockResolvedValue([]),
     };
     const authHelper = {
       generateHash: jest.fn(),
@@ -65,11 +65,11 @@ describe('Auth service unit tests', () => {
     });
 
     it('<AuthService.SignUp> throw http error(account already exists)', async () => {
-      model.findBy.mockResolvedValue(mockUser);
+      model.findBy.mockResolvedValue([mockUser]);
       await expect(authServiceInstance.SignUp(mockUser)).rejects.toThrow(
         createHttpError(409, 'account already exists'),
       );
-      model.findBy.mockResolvedValue(null);
+      model.findBy.mockResolvedValue([]);
     });
 
     it('<AuthService.SignUp> throw http error(invalid password)', async () => {

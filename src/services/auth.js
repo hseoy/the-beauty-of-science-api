@@ -20,7 +20,7 @@ export default class AuthService {
 
   async SignUp({ username, email, password }) {
     const exists = await this.userModel.findBy({ email });
-    if (exists) {
+    if (exists.length > 0) {
       throw createHttpError(409, 'account already exists');
     }
 
