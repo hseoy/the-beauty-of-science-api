@@ -132,7 +132,7 @@
 - response header:
   - `Content-Type`: `application/json`
 - response body:
-  - users(Int Array): user identifier list
+  - (Int Array): user identifier list
 - error response:
   - `400 unable to find users`
 
@@ -148,14 +148,13 @@
 - response header:
   - `Content-Type`: `application/json`
 - response body:
-  - user(Object): user object
-    - id(Int): user identifier
-    - username(String): user name
-    - email(String): user email
-    - experience(String): experience point for level
-    - postcnt(String-Big Int): number of user-created posts
-    - quizcnt(String-Big Int): number of user-created quizzes
-    - joined(String-Date): sign up date
+  - id(Int): user identifier
+  - username(String): user name
+  - email(String): user email
+  - experience(String): experience point for level
+  - postcnt(String-Big Int): number of user-created posts
+  - quizcnt(String-Big Int): number of user-created quizzes
+  - joined(String-Date): sign up date
 - error response:
   - `400 unable to find user`
 
@@ -187,14 +186,13 @@
 - response header:
   - `Content-Type`: `application/json`
 - response body:
-  - user(Object): user object
-    - id(Int): user identifier
-    - username(String): user name
-    - email(String): user email
-    - experience(String): experience point for level
-    - postcnt(String-Big Int): number of user-created posts
-    - quizcnt(String-Big Int): number of user-created quizzes
-    - joined(String-Date): sign up date
+  - id(Int): user identifier
+  - username(String): user name
+  - email(String): user email
+  - experience(String): experience point for level
+  - postcnt(String-Big Int): number of user-created posts
+  - quizcnt(String-Big Int): number of user-created quizzes
+  - joined(String-Date): sign up date
 - error response:
   - `400 unable to find user`
   - `401 Unauthorized`
@@ -214,14 +212,13 @@
 - response header:
   - `Content-Type`: `application/json`
 - response body:
-  - user(Object): updated user object
-    - id(Int): user identifier
-    - username(String): user name(update)
-    - email(String): user email
-    - experience(String): experience point for level
-    - postcnt(String-Big Int): number of user-created posts
-    - quizcnt(String-Big Int): number of user-created quizzes
-    - joined(String-Date): sign up date
+  - id(Int): user identifier
+  - username(String): user name(update)
+  - email(String): user email
+  - experience(String): experience point for level
+  - postcnt(String-Big Int): number of user-created posts
+  - quizcnt(String-Big Int): number of user-created quizzes
+  - joined(String-Date): sign up date
 - error response:
   - `400 unable to update user`
   - `401 Unauthorized`

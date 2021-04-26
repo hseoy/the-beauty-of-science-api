@@ -5,7 +5,7 @@ const handleGetUserIds = async (_req, res, next) => {
   try {
     const userServiceInstance = Container.get(UserService);
     const userIds = await userServiceInstance.findAllUserIds();
-    return res.status(200).json({ users: userIds });
+    return res.status(200).json(userIds);
   } catch (e) {
     return next(e);
   }
@@ -16,14 +16,14 @@ const handleGetUser = async (req, res, next) => {
     const { id } = req.params;
     const userServiceInstance = Container.get(UserService);
     const user = await userServiceInstance.findUser(id);
-    return res.status(200).json({ user });
+    return res.status(200).json(user);
   } catch (e) {
     return next(e);
   }
 };
 
 const handleGetCurrentUser = async (req, res) => {
-  return res.status(200).json({ user: req.currentUser });
+  return res.status(200).json(req.currentUser);
 };
 
 const handleUpdateCurrentUser = async (req, res, next) => {
@@ -34,7 +34,7 @@ const handleUpdateCurrentUser = async (req, res, next) => {
       req.currentUser.id,
       user,
     );
-    return res.status(200).json({ user: updatedUser });
+    return res.status(200).json(updatedUser);
   } catch (e) {
     return next(e);
   }
