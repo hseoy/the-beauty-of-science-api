@@ -19,6 +19,15 @@ export default class AuthService {
   }
 
   async SignUp({ username, email, password }) {
+    const exists = await this.userModel.findBy({ email });
+    if (exists) {
+      throw createHttpError(409, 'account already exists');
+    }
+
+    if (!this.authHelper.passwordValidate(password)) {
+      throw createHttpError(400, 'invalid password');
+    }
+
     const trx = await this.userModel.transaction();
     try {
       await this.userModel.transactionStartWithTrx(trx);
@@ -40,7 +49,6 @@ export default class AuthService {
 
       return { access, refresh };
     } catch (e) {
-      console.log(e);
       await this.userModel.transactionRollback();
       throw createHttpError(400, 'unable to signup');
     }

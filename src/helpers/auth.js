@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { Container } from 'typedi';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants';
+import PasswordValidator from 'password-validator';
 
 const generateToken = (subject, expSeconds, hasPayload) => {
   const { algorithm } = config.jwt;
@@ -88,6 +89,22 @@ const verifyRefreshToken = async (token, id) => {
   return parseInt(res, 10) === parseInt(id, 10);
 };
 
+const passwordSchema = new PasswordValidator();
+passwordSchema
+  .is()
+  .min(8) // Minimum length 8
+  .is()
+  .max(100) // Maximum length 100
+  .has()
+  .symbols(2) // Must have at least 2 symbols
+  .has()
+  .not()
+  .spaces(); // Should not have spaces
+
+const passwordValidate = pw => {
+  return passwordSchema.validate(pw);
+};
+
 const authHelper = {
   generateAccessToken,
   generateRefreshToken,
@@ -102,6 +119,7 @@ const authHelper = {
   storeRefreshToken,
   deleteRefreshToken,
   verifyRefreshToken,
+  passwordValidate,
 };
 
 export default authHelper;
