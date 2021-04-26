@@ -158,14 +158,14 @@ describe('Auth service unit tests', () => {
       findBy: jest.fn().mockResolvedValue([mockUser]),
     };
     const authHelper = {
-      decodeAccessToken: jest.fn(),
+      decodeRefreshToken: jest.fn(),
       verifyRefreshToken: jest.fn(),
       generateAccessToken: jest.fn(),
     };
     const authServiceInstance = new AuthService({ userModel, authHelper });
 
     beforeEach(() => {
-      authHelper.decodeAccessToken.mockReturnValueOnce({ id: mockUser.id });
+      authHelper.decodeRefreshToken.mockReturnValueOnce({ id: mockUser.id });
       authHelper.generateAccessToken.mockReturnValueOnce(mockAccessToken);
     });
 

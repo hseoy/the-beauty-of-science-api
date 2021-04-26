@@ -38,10 +38,5 @@ export default app => {
     controller.handleSignOut,
   );
 
-  route.get(
-    '/refresh',
-    middlewares.isAuth,
-    middlewares.isAccessToken,
-    controller.handleRefresh,
-  );
+  route.get('/refresh', controller.handleRefresh);
 };

@@ -42,7 +42,7 @@ export default class AuthService {
       });
 
       const access = this.authHelper.generateAccessToken(createdUser);
-      const refresh = this.authHelper.generateRefreshToken();
+      const refresh = this.authHelper.generateRefreshToken(createdUser);
 
       await this.authHelper.storeRefreshToken(refresh, createdUser.id);
       await this.userModel.transactionCommit();
@@ -62,7 +62,7 @@ export default class AuthService {
 
       if (isValid) {
         const access = this.authHelper.generateAccessToken(user);
-        const refresh = this.authHelper.generateRefreshToken();
+        const refresh = this.authHelper.generateRefreshToken(user);
 
         await this.authHelper.storeRefreshToken(refresh, user.id);
 
@@ -82,9 +82,9 @@ export default class AuthService {
     }
   }
 
-  async RefreshAccessToken(refreshToken, accessToken) {
+  async RefreshAccessToken(refreshToken) {
     try {
-      const { id } = this.authHelper.decodeAccessToken(accessToken);
+      const { id } = this.authHelper.decodeRefreshToken(refreshToken);
       const [user] = await this.userModel.findBy({ id });
       const isValid =
         user && (await this.authHelper.verifyRefreshToken(refreshToken, id));

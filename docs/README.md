@@ -105,7 +105,6 @@
 ### GET /api/auth/refresh
 
 - request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
   - `Set-Cookie`:
     - `X-Refresh-Token` : Refresh Token(JWT)
 - path variable: X

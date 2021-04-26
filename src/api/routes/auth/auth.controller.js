@@ -56,11 +56,9 @@ const handleRefresh = async (req, res, next) => {
     const authServiceInstance = Container.get(AuthService);
 
     const refreshToken = req.cookies['X-Refresh-Token'];
-    const accessToken = req.headers.authorization.split(' ')[1];
 
     const { access } = await authServiceInstance.RefreshAccessToken(
       refreshToken,
-      accessToken,
     );
 
     return res.status(200).json({ access });

@@ -5,27 +5,29 @@ import { Container } from 'typedi';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/constants';
 import PasswordValidator from 'password-validator';
 
-const generateToken = (subject, expSeconds, hasPayload) => {
+const generateToken = (subject, expSeconds) => {
   const { algorithm } = config.jwt;
   const expiresIn = 60 * 60 * expSeconds;
   const jwtOption = { algorithm, expiresIn, subject };
 
-  return hasPayload
-    ? ({ id, username }) =>
-        jwt.sign({ id, username }, config.jwt.secret, jwtOption)
-    : () => jwt.sign({}, config.jwt.secret, jwtOption);
+  if (subject === ACCESS_TOKEN) {
+    return ({ id, username }) =>
+      jwt.sign({ id, username }, config.jwt.secret, jwtOption);
+  }
+  if (subject === REFRESH_TOKEN) {
+    return ({ id }) => jwt.sign({ id }, config.jwt.secret, jwtOption);
+  }
+  return () => jwt.sign({}, config.jwt.secret, jwtOption);
 };
 
 const generateAccessToken = generateToken(
   ACCESS_TOKEN,
   config.jwt.expire.access,
-  true,
 );
 
 const generateRefreshToken = generateToken(
   REFRESH_TOKEN,
   config.jwt.expire.refresh,
-  false,
 );
 
 const getJwtExpiresIn = (type, time = 's') => {
