@@ -8,10 +8,10 @@ const handleGetPostIds = async (req, res, next) => {
     const { category, offset, limit } = req.query;
     const postServiceInstance = Container.get(PostService);
     const postIds = await postServiceInstance.findPostIds(category, {
-      offset,
-      limit,
+      offset: parseInt(offset, 10),
+      limit: parseInt(limit, 10),
     });
-    return res.status(200).json({ posts: postIds });
+    return res.status(200).json(postIds);
   } catch (e) {
     return next(e);
   }
