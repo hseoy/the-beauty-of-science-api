@@ -37,7 +37,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 "This server is working"
 ```
 
@@ -55,7 +55,7 @@ Request Header:
 
 Request Body:
 
-```json
+```jsonc
 {
   "username": "test", // user name
   "email": "test@gmail.com", // user email
@@ -72,7 +72,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 {
   "access": "[Access Token(JWT)]" // access token for jwt
 }
@@ -98,7 +98,7 @@ Request Header:
 
 Request Body:
 
-```json
+```jsonc
 {
   "email": "test@gmail.com", // user email
   "password": "test!@#$" // user password
@@ -114,7 +114,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 {
   "access": "[Access Token(JWT)]" // access token for jwt
 }
@@ -167,7 +167,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 {
   "access": "[Access Token(JWT)]" /// access token for jwt
 }
@@ -195,7 +195,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 // user identifier list. Can contain more elements
 [1, 2, 3]
 ```
@@ -224,7 +224,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 {
   "id": 1, // user identifier
   "username": "test", // user name
@@ -288,7 +288,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 {
   "id": 1, // user identifier
   "username": "test", // user name
@@ -320,7 +320,7 @@ Request Header:
 
 Request Body:
 
-```json
+```jsonc
 // user information to update
 {
   "username": "testuser" // username to update
@@ -335,7 +335,7 @@ Response Header:
 
 Response Body:
 
-```json
+```jsonc
 // updated user object
 {
   "id": 1, // user identifier
