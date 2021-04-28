@@ -23,11 +23,20 @@ export default class PostService {
   }
 
   async findPostIds(category, { offset, limit } = {}) {
+    if (
+      !category ||
+      (offset && typeof offset !== 'number') ||
+      (limit && typeof limit !== 'number')
+    ) {
+      throw createHttpError(400, 'invalid query parameters');
+    }
+
     try {
-      const posts = await this.postModel.findByOrderByCreated(category, false, {
-        offset,
-        limit,
-      });
+      const posts = await this.postModel.findByOrderByCreated(
+        { category },
+        false,
+        { offset, limit },
+      );
       const postIds = posts.map(post => post.id);
       return postIds;
     } catch (e) {
