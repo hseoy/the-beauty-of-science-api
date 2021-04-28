@@ -22,7 +22,7 @@ const handleGetPost = async (req, res, next) => {
     const { id } = req.params;
     const postServiceInstance = Container.get(PostService);
     const post = await postServiceInstance.findPost(id);
-    return res.status(200).json({ post });
+    return res.status(200).json(post);
   } catch (e) {
     return next(e);
   }
@@ -30,13 +30,13 @@ const handleGetPost = async (req, res, next) => {
 
 const handleCreatePost = async (req, res, next) => {
   try {
-    const { post } = req.body;
+    const { title, content, category } = req.body;
     const postServiceInstance = Container.get(PostService);
     const createdPost = await postServiceInstance.createPost(
       req.currentUser.id,
-      post,
+      { title, content, category },
     );
-    return res.status(200).json({ post: createdPost });
+    return res.status(200).json(createdPost);
   } catch (e) {
     return next(e);
   }
@@ -45,14 +45,14 @@ const handleCreatePost = async (req, res, next) => {
 const handleUpdatePost = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { post } = req.body;
+    const { title, content, category } = req.body;
     const postServiceInstance = Container.get(PostService);
     const updatedPost = await postServiceInstance.updatePost(
       req.currentUser.id,
       id,
-      post,
+      { title, content, category },
     );
-    return res.status(200).json({ post: updatedPost });
+    return res.status(200).json(updatedPost);
   } catch (e) {
     return next(e);
   }

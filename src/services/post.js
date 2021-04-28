@@ -51,7 +51,7 @@ export default class PostService {
       const scoreList = await this.postScoreModel.findBy({ postid: id });
       const total = scoreList.reduce((acc, cur) => acc + cur, 0);
       const participantCnt = scoreList.length;
-      const average = total / participantCnt;
+      const average = participantCnt > 0 ? total / participantCnt : 0;
 
       return {
         ...post,
