@@ -22,12 +22,26 @@
   - [POST /api/users/me/avatar](#post-apiusersmeavatar)
   - [PUT /api/users/me/avatar](#put-apiusersmeavatar)
   - [DELETE /api/users/me/avatar](#delete-apiusersmeavatar)
+- [Post](#post)
+  - [GET /api/posts](#get-apiposts)
+  - [POST /api/posts](#post-apiposts)
+  - [GET /api/posts/:id](#get-apipostsid)
+  - [PUT /api/posts/:id](#put-apipostsid)
+  - [DELETE /api/posts/:id](#delete-apipostsid)
+  - [GET /api/posts/:id/comments](#get-apipostsidcomments)
+  - [POST /api/posts/:id/comments](#post-apipostsidcomments)
+  - [PUT /api/posts/:id/comments](#put-apipostsidcomments)
+  - [DELETE /api/posts/:id/comments](#delete-apipostsidcomments)
+  - [GET /api/posts/:id/score](#get-apipostsidscore)
+  - [POST /api/posts/:id/score](#post-apipostsidscore)
+  - [PUT /api/posts/:id/score](#put-apipostsidscore)
+  - [DELETE /api/posts/:id/score](#delete-apipostsidscore)
 
 ---
 
 ## Root
 
-### `GET /`
+### GET /
 
 Response Header:
 
@@ -45,7 +59,7 @@ Response Body:
 
 ## Auth
 
-### `POST /api/auth/signup`
+### POST /api/auth/signup
 
 Request Header:
 
@@ -88,7 +102,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `POST /api/auth/signin`
+### POST /api/auth/signin
 
 Request Header:
 
@@ -128,7 +142,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/auth/signout`
+### GET /api/auth/signout
 
 Request Header:
 
@@ -151,7 +165,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/auth/refresh`
+### GET /api/auth/refresh
 
 Request Header:
 
@@ -185,7 +199,7 @@ Error Response:
 
 ## User
 
-### `GET /api/users`
+### GET /api/users
 
 Response Header:
 
@@ -208,7 +222,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/users/:id`
+### GET /api/users/:id
 
 Path Variable:
 
@@ -244,7 +258,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/users/:id/avatar`
+### GET /api/users/:id/avatar
 
 Path Variable:
 
@@ -272,7 +286,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/users/me`
+### GET /api/users/me
 
 Request Header:
 
@@ -309,7 +323,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `PUT /api/users/me`
+### PUT /api/users/me
 
 Request Header:
 
@@ -357,7 +371,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `DELETE /api/users/me`
+### DELETE /api/users/me
 
 Request Header:
 
@@ -374,7 +388,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `GET /api/users/me/avatar`
+### GET /api/users/me/avatar
 
 Request Header:
 
@@ -403,7 +417,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `POST /api/users/me/avatar`
+### POST /api/users/me/avatar
 
 Request Header:
 
@@ -427,7 +441,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `PUT /api/users/me/avatar`
+### PUT /api/users/me/avatar
 
 Request Header:
 
@@ -451,7 +465,7 @@ Error Response:
 
 **[⬆ Back to Top](#table-of-content)**
 
-### `DELETE /api/users/me/avatar`
+### DELETE /api/users/me/avatar
 
 Request Header:
 
@@ -467,5 +481,215 @@ Error Response:
 |    `401`    |      Unauthorized       |
 
 **[⬆ Back to Top](#table-of-content)**
+
+---
+
+## Post
+
+### GET /api/posts
+
+Queries:
+
+|   query    | description           | is required |
+| :--------: | --------------------- | :---------: |
+| `category` | category of posts     |    `yes`    |
+|  `offset`  | offset for pagination |    `no`     |
+|  `limit`   | limit for pagination  |    `no`     |
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+// post identifier list. Can contain more elements
+[1, 2, 3]
+```
+
+Error Response:
+
+| Status Code |         Message          |
+| :---------: | :----------------------: |
+|    `400`    |   unable to find posts   |
+|    `400`    | invalid query parameters |
+
+### POST /api/posts
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+Request Body:
+
+```jsonc
+// post object to upload
+{
+  "title": "Hello, The Beauty of Science", // title of the post
+  "content": "# Hello ...", // markdown content of the post
+  "category": "common" // category of the post
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // post identifier
+  "authorid": 1, // user identifier of the author
+  "category": "common", // category of the post
+  "title": "Hello, The Beauty of Science", // title of the post
+  "content": "# Hello ...", // markdown content of the post
+  "created": "2021-04-28T04:42:21.864Z", // creation date of the post
+  "modified": "2021-04-28T04:42:21.864Z" // last modification date of the post
+}
+```
+
+Error Response:
+
+| Status Code |        Message        |
+| :---------: | :-------------------: |
+|    `400`    | unable to create post |
+|    `401`    |     Unauthorized      |
+
+### GET /api/posts/:id
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // post identifier
+  "authorid": 1, // user identifier of the author
+  "category": "common", //category of the post
+  "title": "Hello, The Beauty of Science", // title of the post
+  "content": "# Hello ...", // markdown of the post
+  "created": "2021-04-28T04:42:21.864Z", // creation date of the post
+  "modified": "2021-04-28T04:42:21.864Z", // last modification date of the post
+  "author": "test", // name of the author
+  "participantCnt": 0, // number of people who gave points
+  "total": 0, // total score of the post
+  "average": 0 // average score of the post
+}
+```
+
+Error Response:
+
+| Status Code |       Message       |
+| :---------: | :-----------------: |
+|    `400`    | unable to find post |
+
+### PUT /api/posts/:id
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+Request Body:
+
+```jsonc
+// post object to update
+{
+  "title": "Updated", // title of the post
+  "content": "# Updated", // markdown content of the post
+  "category": "common" // category of the post
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+// updated post object
+{
+  "id": 1, // post identifier
+  "authorid": 1, // user identifier of the author
+  "category": "common", //category of the post
+  "title": "Updated", // title of the post
+  "content": "# Updated", // markdown of the post
+  "created": "2021-04-28T04:42:21.864Z", // creation date of the post
+  "modified": "2021-04-28T05:06:55.349Z" // last modification date of the post
+}
+```
+
+Error Response:
+
+| Status Code |        Message        |
+| :---------: | :-------------------: |
+|    `400`    | unable to update post |
+|    `401`    |     Unauthorized      |
+
+### DELETE /api/posts/:id
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Error Response:
+
+| Status Code |        Message        |
+| :---------: | :-------------------: |
+|    `400`    | unable to delete post |
+|    `401`    |     Unauthorized      |
+
+### GET /api/posts/:id/comments
+
+### POST /api/posts/:id/comments
+
+### PUT /api/posts/:id/comments
+
+### DELETE /api/posts/:id/comments
+
+### GET /api/posts/:id/score
+
+### POST /api/posts/:id/score
+
+### PUT /api/posts/:id/score
+
+### DELETE /api/posts/:id/score
 
 ---
