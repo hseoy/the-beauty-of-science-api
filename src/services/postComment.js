@@ -50,7 +50,12 @@ export default class PostService {
   }
 
   async updateComment(authorid, id, comment) {
+    if (!id) {
+      throw createHttpError(400, 'invalid query parameters');
+    }
+
     try {
+      console.log(authorid, id, comment);
       const { parentid, content } = comment;
       const [updatedComment] = await this.postCommentModel.updateWith(
         { authorid, id },

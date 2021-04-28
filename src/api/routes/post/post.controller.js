@@ -76,14 +76,16 @@ const handleGetPostCommentOrIds = async (req, res, next) => {
     const postCommentServiceInstance = Container.get(PostCommentService);
 
     if (commentid) {
-      const comment = postCommentServiceInstance.findComment(commentid);
-      return res.status(200).json({ comment });
+      const comment = await postCommentServiceInstance.findComment(
+        parseInt(commentid, 10),
+      );
+      return res.status(200).json(comment);
     }
     const postCommentIds = await postCommentServiceInstance.findPostCommentIds(
       id,
       { offset, limit },
     );
-    return res.status(200).json({ comments: postCommentIds });
+    return res.status(200).json(postCommentIds);
   } catch (e) {
     return next(e);
   }
@@ -91,13 +93,14 @@ const handleGetPostCommentOrIds = async (req, res, next) => {
 
 const handleCreatePostComment = async (req, res, next) => {
   try {
-    const { comment } = req.body;
+    const { id } = req.params;
+    const { parentid, content } = req.body;
     const postCommentServiceInstance = Container.get(PostCommentService);
     const createdComment = await postCommentServiceInstance.createComment(
       req.currentUser.id,
-      comment,
+      { parentid, content, postid: id },
     );
-    return res.status(200).json({ comment: createdComment });
+    return res.status(200).json(createdComment);
   } catch (e) {
     return next(e);
   }
@@ -106,14 +109,14 @@ const handleCreatePostComment = async (req, res, next) => {
 const handleUpdatePostComment = async (req, res, next) => {
   try {
     const { commentid } = req.query;
-    const { comment } = req.body;
+    const { parentid, content } = req.body;
     const postCommentServiceInstance = Container.get(PostCommentService);
-    const updatedComment = await postCommentServiceInstance.updaateComment(
+    const updatedComment = await postCommentServiceInstance.updateComment(
       req.currentUser.id,
       commentid,
-      comment,
+      { parentid, content },
     );
-    return res.status(200).json({ comment: updatedComment });
+    return res.status(200).json(updatedComment);
   } catch (e) {
     return next(e);
   }
