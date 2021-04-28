@@ -54,13 +54,7 @@ export default app => {
     controller.handleDeletePostComment,
   );
 
-  route.get(
-    '/:id/score',
-    middlewares.isAuth,
-    middlewares.isAccessToken,
-    middlewares.attachCurrentUser,
-    controller.handleGetPostScore,
-  );
+  route.get('/:id/score', controller.handleGetPostScore);
   route.post(
     '/:id/score',
     middlewares.isAuth,

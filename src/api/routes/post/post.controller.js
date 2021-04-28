@@ -135,13 +135,11 @@ const handleDeletePostComment = async (req, res, next) => {
 
 const handleGetPostScore = async (req, res, next) => {
   try {
-    const { id } = req.parmas;
+    const { id } = req.params;
+    const evaluatorid = req.params.userid;
     const postScoreServiceInstance = Container.get(PostScoreService);
-    const score = await postScoreServiceInstance.findPostScore(
-      id,
-      req.currentUser.id,
-    );
-    return res.status(200).json({ score });
+    const score = await postScoreServiceInstance.findPostScore(id, evaluatorid);
+    return res.status(200).json(score);
   } catch (e) {
     return next(e);
   }
@@ -157,7 +155,7 @@ const handleCreatePostScore = async (req, res, next) => {
       req.currentUser.id,
       score,
     );
-    return res.status(200).json({ score: createdScore });
+    return res.status(200).json(createdScore);
   } catch (e) {
     return next(e);
   }
@@ -173,7 +171,7 @@ const handleUpdatePostScore = async (req, res, next) => {
       req.currentUser.id,
       score,
     );
-    return res.status(200).json({ score: updatedScore });
+    return res.status(200).json(updatedScore);
   } catch (e) {
     return next(e);
   }

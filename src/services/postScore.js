@@ -11,16 +11,16 @@ export default class PostService {
   }
 
   async findPostScore(postid, userid) {
+    const evaluatorid = userid;
     try {
-      const scoreList = await this.postScoreModel.findBy({
-        postid,
-        evaluatorid: userid,
-      });
+      const selector = evaluatorid ? { postid, evaluatorid } : { postid };
+      const scoreList = await this.postScoreModel.findBy(selector);
       if (userid) {
         return scoreList[0];
       }
       return scoreList;
     } catch (e) {
+      console.log(e);
       throw createHttpError(400, 'unable to find score');
     }
   }
