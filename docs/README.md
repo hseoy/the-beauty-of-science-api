@@ -10,7 +10,7 @@
   - [POST /api/auth/signup](#post-apiauthsignup)
   - [POST /api/auth/signin](#post-apiauthsignin)
   - [GET /api/auth/signout](#get-apiauthsignout)
-  - [POST /api/auth/refresh](#post-apiauthrefresh)
+  - [GET /api/auth/refresh](#get-apiauthrefresh)
 - [User](#user)
   - [GET /api/users](#get-apiusers)
   - [GET /api/users/:id](#get-apiusersid)
@@ -27,94 +27,157 @@
 
 ## Root
 
-### GET /
+### `GET /`
 
-- request header: X
-- path variable: X
-- query string: X
-- request body: X
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - (String) : "This server is working."
-- error response: X
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```json
+"This server is working"
+```
 
 **[⬆ Back to Top](#table-of-content)**
 
 ## Auth
 
-### POST /api/auth/signup
+### `POST /api/auth/signup`
 
-- request header:
-  - `Content-Type`: `application/json`
-- path variable: X
-- query string: X
-- request body:
-  - email(String): user email
-  - username(String): user name
-  - password(String): user password
-- response header:
-  - `Content-Type`: `application/json`
-  - `Set-Cookie`:
-    - `X-Refresh-Token` : Refresh Token(JWT)
-- response body:
-  - access(String): Access Token(JWT)
-- error response:
-  - `400 unable to signup`
-  - `400 invalid password`
-  - `409 account already exists`
+Request Header:
 
-**[⬆ Back to Top](#table-of-content)**
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
 
-### POST /api/auth/signin
+Request Body:
 
-- request header:
-  - `Content-Type`: `application/json`
-- path variable: X
-- query string: X
-- request body:
-  - email(String): user email
-  - password(String): user password
-- response header:
-  - `Content-Type`: `application/json`
-  - `Set-Cookie`:
-    - `X-Refresh-Token` : Refresh Token(JWT)
-- response body:
-  - access(String): Access Token(JWT)
-- error response:
-  - `400 unable to signin`
+```json
+{
+  "username": "test", // user name
+  "email": "test@gmail.com", // user email
+  "password": "test!@#$" // user password
+}
+```
 
-**[⬆ Back to Top](#table-of-content)**
+Response Header:
 
-### GET /api/auth/signout
+|      Key       |                 Value                  |
+| :------------: | :------------------------------------: |
+| `Content Type` |           `application/json`           |
+|  `Set-Cookie`  | `X-Refresh-Token=[Refresh Token(JWT)]` |
 
-- request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-  - `Set-Cookie`:
-    - `X-Refresh-Token` : Refresh Token(JWT)
-- path variable: X
-- query string: X
-- request body: X
-- response header: X
-- response body: X
-- error response:
-  - `401 Unauthorized`
+Response Body:
+
+```json
+{
+  "access": "[Access Token(JWT)]" // access token for jwt
+}
+```
+
+Error Response:
+
+| Status Code |        Message         |
+| :---------: | :--------------------: |
+|    `400`    |    unable to signup    |
+|    `400`    |    invalid password    |
+|    `409`    | account already exists |
 
 **[⬆ Back to Top](#table-of-content)**
 
-### GET /api/auth/refresh
+### `POST /api/auth/signin`
 
-- request header:
-  - `Set-Cookie`:
-    - `X-Refresh-Token` : Refresh Token(JWT)
-- path variable: X
-- query string: X
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - access(String): Access Token(JWT)
-- error response:
-  - `401 Unauthorized`
+Request Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Request Body:
+
+```json
+{
+  "email": "test@gmail.com", // user email
+  "password": "test!@#$" // user password
+}
+```
+
+Response Header:
+
+|      Key       |                 Value                  |
+| :------------: | :------------------------------------: |
+| `Content Type` |           `application/json`           |
+|  `Set-Cookie`  | `X-Refresh-Token=[Refresh Token(JWT)]` |
+
+Response Body:
+
+```json
+{
+  "access": "[Access Token(JWT)]" // access token for jwt
+}
+```
+
+Error Response:
+
+| Status Code |     Message      |
+| :---------: | :--------------: |
+|    `400`    | unable to signin |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `GET /api/auth/signout`
+
+Request Header:
+
+|       Key       |                 Value                  |
+| :-------------: | :------------------------------------: |
+| `Authorization` |      `Bearer [Access Token(JWT)]`      |
+|  `Set-Cookie`   | `X-Refresh-Token=[Refresh Token(JWT)]` |
+
+Response Header:
+
+|     Key      |        Value         |
+| :----------: | :------------------: |
+| `Set-Cookie` | `X-Refresh-Token=''` |
+
+Error Response:
+
+| Status Code |   Message    |
+| :---------: | :----------: |
+|    `401`    | Unauthorized |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `GET /api/auth/refresh`
+
+Request Header:
+
+|     Key      |                 Value                  |
+| :----------: | :------------------------------------: |
+| `Set-Cookie` | `X-Refresh-Token=[Refresh Token(JWT)]` |
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```json
+{
+  "access": "[Access Token(JWT)]" /// access token for jwt
+}
+```
+
+Error Response:
+
+| Status Code |   Message    |
+| :---------: | :----------: |
+|    `401`    | Unauthorized |
 
 **[⬆ Back to Top](#table-of-content)**
 
@@ -122,186 +185,286 @@
 
 ## User
 
-### GET /api/users
+### `GET /api/users`
 
-- request header: X
-- path variable: X
-- query string: X
-- request body: X
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - (Int Array): user identifier list
-- error response:
-  - `400 unable to find users`
+Response Header:
 
-**[⬆ Back to Top](#table-of-content)**
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
 
-### GET /api/users/:id
+Response Body:
 
-- request header: X
-- path variable:
-  - id(Int) : user identifier
-- query string: X
-- request body: X
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - id(Int): user identifier
-  - username(String): user name
-  - email(String): user email
-  - experience(String): experience point for level
-  - postcnt(String-Big Int): number of user-created posts
-  - quizcnt(String-Big Int): number of user-created quizzes
-  - joined(String-Date): sign up date
-- error response:
-  - `400 unable to find user`
+```json
+// user identifier list. Can contain more elements
+[1, 2, 3]
+```
+
+Error Response:
+
+| Status Code |       Message        |
+| :---------: | :------------------: |
+|    `400`    | unable to find users |
 
 **[⬆ Back to Top](#table-of-content)**
 
-### GET /api/users/:id/avatar
+### `GET /api/users/:id`
 
-- request header: X
-- path variable:
-  - id(Int): user identifier
-- query string: X
-- request body: X
-- response header:
-  - Content-Type: type of image file uploaded by user
-- response body:
-  - image file(Binary): image file uploaded by user
-- error response:
-  - `400 unable to get avatar image`
+Path Variable:
 
-**[⬆ Back to Top](#table-of-content)**
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `user identifier` |
 
-### GET /api/users/me
+Response Header:
 
-- request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body: X
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - id(Int): user identifier
-  - username(String): user name
-  - email(String): user email
-  - experience(String): experience point for level
-  - postcnt(String-Big Int): number of user-created posts
-  - quizcnt(String-Big Int): number of user-created quizzes
-  - joined(String-Date): sign up date
-- error response:
-  - `400 unable to find user`
-  - `401 Unauthorized`
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```json
+{
+  "id": 1, // user identifier
+  "username": "test", // user name
+  "email": "test@gmail.com", // user email
+  "experience": "1234", // experience point for level
+  "postcnt": "10", // number of user-created posts
+  "quizcnt": "7", // number of user-created quizzes
+  "joined": "2021-04-27T01:25:46.071Z" // sign up date
+}
+```
+
+Error Response:
+
+| Status Code |       Message       |
+| :---------: | :-----------------: |
+|    `400`    | unable to find user |
 
 **[⬆ Back to Top](#table-of-content)**
 
-### PUT /api/users/me
+### `GET /api/users/:id/avatar`
 
-- request header:
-  - `Content-Type`: `application/json`
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body:
-  - user(Object): user information to update
-    - username(String): user name
-- response header:
-  - `Content-Type`: `application/json`
-- response body:
-  - id(Int): user identifier
-  - username(String): user name(update)
-  - email(String): user email
-  - experience(String): experience point for level
-  - postcnt(String-Big Int): number of user-created posts
-  - quizcnt(String-Big Int): number of user-created quizzes
-  - joined(String-Date): sign up date
-- error response:
-  - `400 unable to update user`
-  - `401 Unauthorized`
+Path Variable:
 
-**[⬆ Back to Top](#table-of-content)**
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `user identifier` |
 
-### DELETE /api/users/me
+Response Header:
 
-- request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body: X
-- response header: X
-- response body: X
-- error response:
-  - `400 unable to delete user`
-  - `401 Unauthorized`
+|      Key       |                  Value                  |
+| :------------: | :-------------------------------------: |
+| `Content Type` | `[type of image file uploaded by user]` |
+
+Response Body:
+
+```
+image binary file uploaded by user
+```
+
+Error Response:
+
+| Status Code |          Message           |
+| :---------: | :------------------------: |
+|    `400`    | unable to get avatar image |
 
 **[⬆ Back to Top](#table-of-content)**
 
-### GET /api/users/me/avatar
+### `GET /api/users/me`
 
-- request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body: X
-- response header:
-  - Content-Type: type of image file uploaded by user
-- response body:
-  - image file(Binary): image file uploaded by user
-- error response:
-  - `400 unable to get avatar image`
-  - `401 Unauthorized`
+Request Header:
 
-**[⬆ Back to Top](#table-of-content)**
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
 
-### POST /api/users/me/avatar
+Response Header:
 
-- request header:
-  - `Content-Type`: `multipart/form-data`
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body:
-  - avatar(Binary): image file to upload
-- response header: X
-- response body: X
-- error response:
-  - `400 unable to update avatar`
-  - `401 Unauthorized`
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
 
-**[⬆ Back to Top](#table-of-content)**
+Response Body:
 
-### PUT /api/users/me/avatar
+```json
+{
+  "id": 1, // user identifier
+  "username": "test", // user name
+  "email": "test@gmail.com", // user email
+  "experience": "1234", // experience point for level
+  "postcnt": "10", // number of user-created posts
+  "quizcnt": "7", // number of user-created quizzes
+  "joined": "2021-04-27T01:25:46.071Z" // sign up date
+}
+```
 
-- request header:
-  - `Content-Type`: `multipart/form-data`
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body:
-  - avatar(Binary): image file to upload
-- response header: X
-- response body: X
-- error response:
-  - `400 unable to update avatar`
-  - `401 Unauthorized`
+Error Response:
+
+| Status Code |       Message       |
+| :---------: | :-----------------: |
+|    `400`    | unable to find user |
+|    `401`    |    Unauthorized     |
 
 **[⬆ Back to Top](#table-of-content)**
 
-### DELETE /api/users/me/avatar
+### `PUT /api/users/me`
 
-- request header:
-  - `Authorization`: `Bearer ACCESS_TOKEN`
-- path variable: X
-- query string: X
-- request body: X
-- response header: X
-- response body: X
-- error response:
-  - `400 unable to delete avatar`
-  - `401 Unauthorized`
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+Request Body:
+
+```json
+// user information to update
+{
+  "username": "testuser" // username to update
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```json
+// updated user object
+{
+  "id": 1, // user identifier
+  "username": "testuser", // user name
+  "email": "test@gmail.com", // user email
+  "experience": "1234", // experience point for level
+  "postcnt": "10", // number of user-created posts
+  "quizcnt": "7", // number of user-created quizzes
+  "joined": "2021-04-27T01:25:46.071Z" // sign up date
+}
+```
+
+Error Response:
+
+| Status Code |        Message        |
+| :---------: | :-------------------: |
+|    `400`    | unable to update user |
+|    `401`    |     Unauthorized      |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `DELETE /api/users/me`
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Error Response:
+
+| Status Code |        Message        |
+| :---------: | :-------------------: |
+|    `400`    | unable to delete user |
+|    `401`    |     Unauthorized      |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `GET /api/users/me/avatar`
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Response Header:
+
+|      Key       |                  Value                  |
+| :------------: | :-------------------------------------: |
+| `Content Type` | `[type of image file uploaded by user]` |
+
+Response Body:
+
+```
+image binary file uploaded by user
+```
+
+Error Response:
+
+| Status Code |          Message           |
+| :---------: | :------------------------: |
+|    `400`    | unable to get avatar image |
+|    `401`    |        Unauthorized        |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `POST /api/users/me/avatar`
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |    `multipart/form-data`     |
+
+Request Body:
+
+|   Key    |             Value             |
+| :------: | :---------------------------: |
+| `avatar` | `image binary file to upload` |
+
+Error Response:
+
+| Status Code |         Message         |
+| :---------: | :---------------------: |
+|    `400`    | unable to update avatar |
+|    `401`    |      Unauthorized       |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `PUT /api/users/me/avatar`
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |    `multipart/form-data`     |
+
+Request Body:
+
+|   Key    |             Value             |
+| :------: | :---------------------------: |
+| `avatar` | `image binary file to upload` |
+
+Error Response:
+
+| Status Code |         Message         |
+| :---------: | :---------------------: |
+|    `400`    | unable to update avatar |
+|    `401`    |      Unauthorized       |
+
+**[⬆ Back to Top](#table-of-content)**
+
+### `DELETE /api/users/me/avatar`
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Error Response:
+
+| Status Code |         Message         |
+| :---------: | :---------------------: |
+|    `400`    | unable to delete avatar |
+|    `401`    |      Unauthorized       |
 
 **[⬆ Back to Top](#table-of-content)**
 
