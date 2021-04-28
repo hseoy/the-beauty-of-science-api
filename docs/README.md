@@ -678,18 +678,216 @@ Error Response:
 
 ### GET /api/posts/:id/comments
 
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Queries:
+
+|    query    | description                                                                | is required |
+| :---------: | -------------------------------------------------------------------------- | :---------: |
+| `commentid` | comment identifier to get. if it is null, this api will return comment ids |    `no`     |
+|  `offset`   | offset for pagination                                                      |    `no`     |
+|   `limit`   | limit for pagination                                                       |    `no`     |
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+// comment identifier list. Can contain more elements
+[1, 2, 3]
+
+// Or
+{
+  "id": 1, // comment identifier
+  "postid": 1, // parent post identifier
+  "parentid": 0, // parent comment identifier
+  "authorid": 1, // user identifier of the author
+  "content": "Hello", // content of the comment
+  "created": "2021-04-28T06:48:25.444Z", // creation date of the comment
+  "modified": "2021-04-28T06:48:25.444Z" // last modification date of the comment
+}
+```
+
+Error Response:
+
+| Status Code |         Message         |
+| :---------: | :---------------------: |
+|    `400`    | unable to find comments |
+|    `400`    | unable to find comment  |
+
 ### POST /api/posts/:id/comments
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+Request Body:
+
+```jsonc
+{
+  // identifier of parent comment for nested comments.
+  // if this value is zero, This means that it is not child.
+  "parentid": 0,
+  "content": "Hello" // content of the comment
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // comment identifier
+  "postid": 1, // parent post identifier
+  "parentid": 0, // parent comment identifier
+  "authorid": 1, // user identifier of the author
+  "content": "Hello", // content of the comment
+  "created": "2021-04-28T06:48:25.444Z", // creation date of the comment
+  "modified": "2021-04-28T06:48:25.444Z" // last modification date of the comment
+}
+```
+
+Error Response:
+
+| Status Code |         Message          |
+| :---------: | :----------------------: |
+|    `400`    | unable to create comment |
+|    `401`    |       Unauthorized       |
 
 ### PUT /api/posts/:id/comments
 
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Queries:
+
+|    query    | description                  | is required |
+| :---------: | ---------------------------- | :---------: |
+| `commentid` | comment identifier to update |    `yes`    |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+Request Body:
+
+```jsonc
+{
+  // identifier of parent comment for nested comments.
+  // if this value is zero, This means that it is not child.
+  "parentid": 0,
+  "content": "Updated" // content of the comment
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+// updated comment object
+{
+  "id": 1, // comment identifier
+  "postid": 1, // parent post identifier
+  "parentid": 0, // parent comment identifier
+  "authorid": 1, // user identifier of the author
+  "content": "Updated", // content of the comment
+  "created": "2021-04-28T06:48:25.444Z", // creation date of the comment
+  "modified": "2021-04-28T07:16:10.426Z" // last modification date of the comment
+}
+```
+
+Error Response:
+
+| Status Code |         Message          |
+| :---------: | :----------------------: |
+|    `400`    | unable to update comment |
+|    `400`    | invalid query parameters |
+|    `401`    |       Unauthorized       |
+
 ### DELETE /api/posts/:id/comments
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Error Response:
+
+| Status Code |         Message          |
+| :---------: | :----------------------: |
+|    `400`    | unable to delete comment |
+|    `401`    |       Unauthorized       |
 
 ### GET /api/posts/:id/score
 
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
 ### POST /api/posts/:id/score
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
 
 ### PUT /api/posts/:id/score
 
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
+
 ### DELETE /api/posts/:id/score
+
+Path Variable:
+
+| Variable |    Description    |
+| :------: | :---------------: |
+|   `id`   | `post identifier` |
 
 ---
