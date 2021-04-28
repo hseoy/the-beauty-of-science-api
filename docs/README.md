@@ -703,7 +703,9 @@ Response Body:
 ```jsonc
 // comment identifier list. Can contain more elements
 [1, 2, 3]
+```
 
+```jsonc
 // Or
 {
   "id": 1, // comment identifier
@@ -866,6 +868,48 @@ Path Variable:
 | :------: | :---------------: |
 |   `id`   | `post identifier` |
 
+Queries:
+
+|  query   | description                                                                                                                | is required |
+| :------: | -------------------------------------------------------------------------------------------------------------------------- | :---------: |
+| `userid` | user identifier to get evaluation scores for specific user only. if it is null, this api will return all data for the post |    `no`     |
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // score identifier
+  "postid": 1, // parent post identifier
+  "score": 5, // evaluation score for the post
+  "evaluatorid": 1 // user identifier of evaluator
+}
+```
+
+```jsonc
+// Or
+[
+  {
+    "id": 1, // score identifier
+    "postid": 1, // parent post identifier
+    "score": 5, // evaluation score for the post
+    "evaluatorid": 1 // user identifier of evaluator
+  }
+]
+```
+
+Error Response:
+
+| Status Code |        Message         |
+| :---------: | :--------------------: |
+|    `400`    | unable to create score |
+|    `401`    |      Unauthorized      |
+
 ### POST /api/posts/:id/score
 
 Path Variable:
@@ -873,6 +917,43 @@ Path Variable:
 | Variable |    Description    |
 | :------: | :---------------: |
 |   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+```jsonc
+{
+  "score": 5 // evaluation score 0 ~ 5
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // score identifier
+  "postid": 1, // parent post identifier
+  "score": 5, // evaluation score for the post
+  "evaluatorid": 1 // user identifier of evaluator
+}
+```
+
+Error Response:
+
+| Status Code |        Message         |
+| :---------: | :--------------------: |
+|    `400`    | unable to create score |
+|    `401`    |      Unauthorized      |
 
 ### PUT /api/posts/:id/score
 
@@ -882,6 +963,43 @@ Path Variable:
 | :------: | :---------------: |
 |   `id`   | `post identifier` |
 
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+| `Content Type`  |      `application/json`      |
+
+```jsonc
+{
+  "score": 4 // evaluation score 0 ~ 5
+}
+```
+
+Response Header:
+
+|      Key       |       Value        |
+| :------------: | :----------------: |
+| `Content Type` | `application/json` |
+
+Response Body:
+
+```jsonc
+{
+  "id": 1, // score identifier
+  "postid": 1, // parent post identifier
+  "score": 4, // evaluation score for the post
+  "evaluatorid": 1 // user identifier of evaluator
+}
+```
+
+Error Response:
+
+| Status Code |        Message         |
+| :---------: | :--------------------: |
+|    `400`    | unable to update score |
+|    `401`    |      Unauthorized      |
+
 ### DELETE /api/posts/:id/score
 
 Path Variable:
@@ -889,5 +1007,18 @@ Path Variable:
 | Variable |    Description    |
 | :------: | :---------------: |
 |   `id`   | `post identifier` |
+
+Request Header:
+
+|       Key       |            Value             |
+| :-------------: | :--------------------------: |
+| `Authorization` | `Bearer [Access Token(JWT)]` |
+
+Error Response:
+
+| Status Code |        Message         |
+| :---------: | :--------------------: |
+|    `400`    | unable to delete score |
+|    `401`    |      Unauthorized      |
 
 ---
